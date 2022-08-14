@@ -10,16 +10,18 @@ export default class MainPresenter {
   mainComponent = new MainView();
   tripListComponent = new TripListView();
 
-  init = (mainContainer) => {
+  init = (mainContainer, pointsModel) => {
     this.mainContainer = mainContainer;
+    this.pointsModel = pointsModel;
+    this.mainPoints = [...this.pointsModel.getPoints()];
 
     render(this.mainComponent, this.mainContainer);
     render(new SortView(), this.mainComponent.getElement());
     render(this.tripListComponent, this.mainComponent.getElement());
-    render(new PointEditView(), this.tripListComponent.getElement());
+    render(new PointEditView(this.mainPoints[0]), this.tripListComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new PointView(), this.tripListComponent.getElement());
+    for (let i = 1; i < this.mainPoints.length; i++) {
+      render(new PointView(this.mainPoints[i]), this.tripListComponent.getElement());
     }
 
     render(new PointAddView(), this.tripListComponent.getElement());
