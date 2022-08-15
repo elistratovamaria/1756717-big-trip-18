@@ -17,9 +17,12 @@ const generateOfferByType = (i) => ({
   offers: getArrayRandomLength(mockOffers),
 });
 
-const mockOffersByType = [];
-for (let i = 0; i < TYPES.length; i++) {
-  mockOffersByType.push(generateOfferByType(i));
-}
+const generateMockOffersByType = () => {
+  const mockOffersByType = [];
+  for (let i = 0; i < TYPES.length; i++) {
+    mockOffersByType.push(generateOfferByType(i));
+  }
+  return mockOffersByType;
+};
 
-export { mockOffers, mockOffersByType };
+export { generateMockOffersByType };

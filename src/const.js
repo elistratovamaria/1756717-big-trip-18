@@ -11,6 +11,15 @@ const OFFER_TITLES = [
   'Travel by train',
 ];
 
+const OFFERS_OPTIONS = {
+  'Upgrade to a business class': 'comfort',
+  'Add luggage': 'luggage',
+  'Switch to comfort class': 'comfort',
+  'Add meal': 'meal',
+  'Choose seats': 'seats',
+  'Travel by train': 'train',
+};
+
 const DESCRIPTIONS_VARIANTS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -74,4 +83,4 @@ const descriptionLength = {
   MAX: 5,
 };
 
-export { POINTS_AMOUNT, MAX_MINUTE_GAP, destinationId, MAX_LENGTH_DESTINATION_ARRAY, descriptionLength, offerId, mockPrice, OFFER_TITLES, DESCRIPTIONS_VARIANTS, DESTINATION_NAMES, mockOfferPrice, TYPES, MINUTES_IN_DAY, MINUTES_IN_HOUR };
+export { POINTS_AMOUNT, MAX_MINUTE_GAP, destinationId, MAX_LENGTH_DESTINATION_ARRAY, descriptionLength, offerId, mockPrice, OFFER_TITLES, DESCRIPTIONS_VARIANTS, DESTINATION_NAMES, mockOfferPrice, TYPES, MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS };
