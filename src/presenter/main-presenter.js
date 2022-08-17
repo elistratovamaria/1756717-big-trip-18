@@ -7,57 +7,59 @@ import PointView from '../view/point-view.js';
 import { render } from '../render.js';
 
 export default class MainPresenter {
-  mainComponent = new MainView();
-  tripListComponent = new TripListView();
+  #mainContainer = null;
+  #pointsModel = null;
+  #destinationsModel = null;
+  #offersModel = null;
+
+  #mainComponent = new MainView();
+  #tripListComponent = new TripListView();
+
+  #mainPoints = [];
+  #destinations = [];
+  #offers = [];
 
   init = (mainContainer, pointsModel, destinationsModel, offersModel) => {
-    this.mainContainer = mainContainer;
-    this.pointsModel = pointsModel;
-    this.destinationsModel = destinationsModel;
-    this.offersModel = offersModel;
-    this.mainPoints = [...this.pointsModel.getPoints()];
-    this.destinations = [...this.destinationsModel.getDestinations()];
-    this.offers = [...this.offersModel.getOffers()];
+    this.#mainContainer = mainContainer;
+    this.#pointsModel = pointsModel;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
+    this.#mainPoints = [...this.#pointsModel.points];
+    this.#destinations = [...this.#destinationsModel.destinations];
+    this.#offers = [...this.#offersModel.offers];
 
-    render(this.mainComponent, this.mainContainer);
-    render(new SortView(), this.mainComponent.getElement());
-    render(this.tripListComponent, this.mainComponent.getElement());
+    render(this.#mainComponent, this.#mainContainer);
+    render(new SortView(), this.#mainComponent.element);
+    render(this.#tripListComponent, this.#mainComponent.element);
 
-    const destinationPointEdit = this.destinations.find((dest) => dest.id === this.mainPoints[0].destination);
+    const destinationPointEdit = this.#destinations.find((dest) => dest.id === this.#mainPoints[0].destination);
 
-    const pointTypeOffers = this.offers.find((offer) => offer.type === this.mainPoints[0].type);
+    const pointTypeOffers = this.#offers.find((offer) => offer.type === this.#mainPoints[0].type);
 
-    this.mainPoints[0].destination = destinationPointEdit;
-    this.mainPoints[0].offers = pointTypeOffers;
+    this.#mainPoints[0].destination = destinationPointEdit;
+    this.#mainPoints[0].offers = pointTypeOffers;
 
-    render(new PointEditView(this.mainPoints[0]), this.tripListComponent.getElement());
+    render(new PointEditView(this.#mainPoints[0]), this.#tripListComponent.element);
 
-    for (let i = 1; i < this.mainPoints.length; i++) {
+    for (let i = 1; i < this.#mainPoints.length; i++) {
 
-      const filteredOffers = () => {
-        const pointOffers = this.offers;
-        const offersByType = pointOffers.find((offer) => offer.type === this.mainPoints[i].type);
-        const offersToAd = [];
-        const offers = offersByType.offers;
-        for (const offer of offers) {
-          if (this.mainPoints[i].offers.includes(offer.id)) {
-            offersToAd.push(offer);
-          }
-        }
+      const filterOffers = () => {
+        const pointOffers = this.#offers.find((offer) => offer.type === this.#mainPoints[i].type);
+        const offersToAd = pointOffers.offers.filter((offer) => this.#mainPoints[i].offers.includes(offer.id));
         return {
-          type: offersByType.type,
+          type: pointOffers.type,
           offers: offersToAd,
         };
       };
 
-      const destination = this.destinations.find((dest) => dest.id === this.mainPoints[i].destination);
+      const destination = this.#destinations.find((dest) => dest.id === this.#mainPoints[i].destination);
 
-      this.mainPoints[i].destination = destination;
-      this.mainPoints[i].offers = filteredOffers();
+      this.#mainPoints[i].destination = destination;
+      this.#mainPoints[i].offers = filterOffers();
 
-      render(new PointView(this.mainPoints[i]), this.tripListComponent.getElement());
+      render(new PointView(this.#mainPoints[i]), this.#tripListComponent.element);
     }
 
-    render(new PointAddView(), this.tripListComponent.getElement());
+    render(new PointAddView(), this.#tripListComponent.element);
   };
 }
