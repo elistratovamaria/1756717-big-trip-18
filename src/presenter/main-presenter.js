@@ -2,7 +2,6 @@ import MainView from '../view/main-view.js';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
-import PointAddView from '../view/point-add-view.js';
 import PointView from '../view/point-view.js';
 import { render } from '../render.js';
 
