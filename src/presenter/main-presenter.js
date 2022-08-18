@@ -2,28 +2,90 @@ import MainView from '../view/main-view.js';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
-import PointAddView from '../view/point-add-view.js';
 import PointView from '../view/point-view.js';
 import { render } from '../render.js';
 
 export default class MainPresenter {
-  mainComponent = new MainView();
-  tripListComponent = new TripListView();
+  #mainContainer = null;
+  #pointsModel = null;
+  #destinationsModel = null;
+  #offersModel = null;
 
-  init = (mainContainer, pointsModel) => {
-    this.mainContainer = mainContainer;
-    this.pointsModel = pointsModel;
-    this.mainPoints = [...this.pointsModel.getPoints()];
+  #mainComponent = new MainView();
+  #tripListComponent = new TripListView();
 
-    render(this.mainComponent, this.mainContainer);
-    render(new SortView(), this.mainComponent.getElement());
-    render(this.tripListComponent, this.mainComponent.getElement());
-    render(new PointEditView(this.mainPoints[0]), this.tripListComponent.getElement());
+  #mainPoints = [];
+  #destinations = [];
+  #offers = [];
 
-    for (let i = 1; i < this.mainPoints.length; i++) {
-      render(new PointView(this.mainPoints[i]), this.tripListComponent.getElement());
+  init = (mainContainer, pointsModel, destinationsModel, offersModel) => {
+    this.#mainContainer = mainContainer;
+    this.#pointsModel = pointsModel;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
+    this.#mainPoints = [...this.#pointsModel.points];
+    this.#destinations = [...this.#destinationsModel.destinations];
+    this.#offers = [...this.#offersModel.offers];
+
+    render(this.#mainComponent, this.#mainContainer);
+    render(new SortView(), this.#mainComponent.element);
+    render(this.#tripListComponent, this.#mainComponent.element);
+
+    for (let i = 0; i < this.#mainPoints.length; i++) {
+
+      const filterOffers = () => {
+        const pointOffers = this.#offers.find((offer) => offer.type === this.#mainPoints[i].type);
+        const offersToAd = pointOffers.offers.filter((offer) => this.#mainPoints[i].offers.includes(offer.id));
+        return {
+          type: pointOffers.type,
+          offers: offersToAd,
+        };
+      };
+
+      const destination = this.#destinations.find((dest) => dest.id === this.#mainPoints[i].destination);
+
+      this.#mainPoints[i].destination = destination;
+      this.#mainPoints[i].offers = filterOffers();
+
+      this.#renderPoint(this.#mainPoints[i]);
     }
+  };
 
-    render(new PointAddView(), this.tripListComponent.getElement());
+  #renderPoint = (point) => {
+    const pointComponent = new PointView(point);
+    const pointEditComponent = new PointEditView(point);
+
+    const replacePointToForm = () => {
+      this.#tripListComponent.element.replaceChild(pointEditComponent.element, pointComponent.element);
+    };
+
+    const replaceFormToPoint = () => {
+      this.#tripListComponent.element.replaceChild(pointComponent.element, pointEditComponent.element);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replacePointToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.element.querySelector('.event__save-btn').addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceFormToPoint();
+    });
+
+    render(pointComponent, this.#tripListComponent.element);
   };
 }

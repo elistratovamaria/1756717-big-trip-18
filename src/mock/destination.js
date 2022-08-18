@@ -21,9 +21,12 @@ const generateDestination = (i) => ({
   ],
 });
 
-const destinations = [];
-for (let i = 0; i < MAX_LENGTH_DESTINATION_ARRAY; i++) {
-  destinations.push(generateDestination(i));
-}
+const generateDestinations = () => {
+  const destinations = [];
+  for (let i = 0; i < MAX_LENGTH_DESTINATION_ARRAY; i++) {
+    destinations.push(generateDestination(i));
+  }
+  return destinations;
+};
 
-export { destinations};
+export { generateDestinations };

@@ -1,11 +1,10 @@
 import { createElement } from '../render.js';
 import { humanizePointEditDate } from '../util.js';
-import { TYPES } from '../const.js';
-import { destinations } from '../mock/destination.js';
-import { mockOffersByType } from '../mock/offers.js';
+import { TYPES, OFFERS_OPTIONS } from '../const.js';
 
 const createPointEditTemplate = (point) => {
   const { dateFrom, dateTo, type, destination, basePrice, offers } = point;
+
   const makeTypeToUpperCase = (typeToChange) => typeToChange[0].toUpperCase() + typeToChange.slice(1);
 
   const createEditTypeTemplate = (currentType) => TYPES.map((typeToShow) => `<div
@@ -16,42 +15,23 @@ const createPointEditTemplate = (point) => {
 
   const typesTemplate = createEditTypeTemplate(type);
 
-  const getDestinationName = () => {
-    for (const mockDestination of destinations) {
-      if (destination === mockDestination.id) {
-        return mockDestination.nameDest;
-      }
-    }
-  };
-
-  const getDestinationDescription = () => {
-    for (const mockDestination of destinations) {
-      if (destination === mockDestination.id) {
-        return mockDestination.description;
-      }
-    }
-  };
-
   const humanDateFrom = humanizePointEditDate(dateFrom);
   const humanDateTo = humanizePointEditDate(dateTo);
 
-  const isOfferChecked = (offer) => offers.includes(offer.id) ? 'checked' : '';
+  const getOfferOption = (offer) => {
+    const offerTitle = offer.title;
+    return offerTitle in OFFERS_OPTIONS ? OFFERS_OPTIONS[offerTitle] : 'default';
+  };
 
-  const createEditOffersTemplate = () => {
-    if (mockOffersByType) {
-      const pointTypeOffers = mockOffersByType
-        .find((offer) => offer.type === type);
-      return pointTypeOffers.offers
-        .map((offer) => `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isOfferChecked(offer)}>
-        <label class="event__offer-label" for="event-offer-luggage-1">
+  const createEditOffersTemplate = () => offers.offers
+    .map((offer) => `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${getOfferOption(offer)}-1" type="checkbox" name="event-offer-luggage">
+        <label class="event__offer-label" for="event-offer-${getOfferOption(offer)}-1">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offer.price}</span>
         </label>
       </div>`).join('');
-    }
-  };
 
   const offersTemplate = createEditOffersTemplate();
 
@@ -78,7 +58,7 @@ const createPointEditTemplate = (point) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${getDestinationName()}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.nameDest}" list="destination-list-1">
           <datalist id="destination-list-1">
             <option value="Amsterdam" selected></option>
             <option value="Geneva"></option>
@@ -119,7 +99,7 @@ const createPointEditTemplate = (point) => {
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${getDestinationDescription()}</p>
+          <p class="event__destination-description">${destination.description}</p>
         </section>
       </section>
     </form>
@@ -128,23 +108,26 @@ const createPointEditTemplate = (point) => {
 };
 
 export default class PointEditView {
+  #element = null;
+  #point = null;
+
   constructor(point) {
-    this.point = point;
+    this.#point = point;
   }
 
-  getTemplate() {
-    return createPointEditTemplate(this.point);
+  get template() {
+    return createPointEditTemplate(this.#point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
