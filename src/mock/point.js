@@ -1,4 +1,4 @@
-import { getRandomInteger, getArrayRandomLength } from '../util.js';
+import { getRandomInteger, getArrayRandomLength } from '../utils/common.js';
 import { MAX_MINUTE_GAP, destinationId, mockPrice, TYPES } from '../const.js';
 import dayjs from 'dayjs';
 

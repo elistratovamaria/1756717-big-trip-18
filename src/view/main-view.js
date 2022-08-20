@@ -1,23 +1,9 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createMainTemplate = () => '<section class="trip-events"></section>';
 
-export default class MainView {
-  #element = null;
-
+export default class MainView extends AbstractView {
   get template() {
     return createMainTemplate();
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

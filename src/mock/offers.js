@@ -1,5 +1,5 @@
 import { offerId, OFFER_TITLES, mockOfferPrice, TYPES } from '../const.js';
-import { getArrayRandomLength, getRandomInteger } from '../util.js';
+import { getArrayRandomLength, getRandomInteger } from '../utils/common.js';
 
 const generateOffer = (i) => ({
   id: i + 1,
