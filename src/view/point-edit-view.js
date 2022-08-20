@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizePointEditDate } from '../util.js';
+import { humanizePointEditDate } from '../utils/point.js';
 import { TYPES, OFFERS_OPTIONS } from '../const.js';
 
 const createPointEditTemplate = (point) => {
@@ -118,4 +118,24 @@ export default class PointEditView extends AbstractView {
   get template() {
     return createPointEditTemplate(this.#point);
   }
+
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.event__save-btn').addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
+
+  setClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+  };
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
 }

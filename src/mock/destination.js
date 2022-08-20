@@ -1,5 +1,5 @@
 import { MAX_LENGTH_DESTINATION_ARRAY, descriptionLength, DESCRIPTIONS_VARIANTS, DESTINATION_NAMES } from '../const.js';
-import { getRandomInteger } from '../util.js';
+import { getRandomInteger } from '../utils/common.js';
 
 const generateDescription = () => {
   const descriptions = [];
