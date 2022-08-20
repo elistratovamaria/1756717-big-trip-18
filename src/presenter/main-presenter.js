@@ -4,7 +4,7 @@ import TripListView from '../view/trip-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointView from '../view/point-view.js';
 import NoPointView from '../view/no-point-view.js';
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 
 export default class MainPresenter {
   #mainContainer = null;
