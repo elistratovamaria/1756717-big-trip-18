@@ -4,6 +4,7 @@ import MainPresenter from './presenter/main-presenter.js';
 import PointsModel from './model/points-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
+import { generateFilter } from './mock/filter.js';
 
 const tripControlElement = document.querySelector('.trip-main__trip-controls');
 const tripEventsElement = document.querySelector('.trip-events');
@@ -13,6 +14,8 @@ const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
 const mainPresenter = new MainPresenter(tripEventsElement, pointsModel, destinationsModel, offersModel);
 
-render(new FilterView(), tripControlElement);
+const filters = generateFilter(pointsModel.points);
+
+render(new FilterView(filters), tripControlElement);
 
 mainPresenter.init();

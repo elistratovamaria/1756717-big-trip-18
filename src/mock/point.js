@@ -3,12 +3,12 @@ import { MAX_MINUTE_GAP, destinationId, mockPrice, TYPES } from '../const.js';
 import dayjs from 'dayjs';
 
 const generateDateFrom = () => {
-  const minuteGap = getRandomInteger(0, MAX_MINUTE_GAP);
+  const minuteGap = getRandomInteger(-MAX_MINUTE_GAP, MAX_MINUTE_GAP);
   return dayjs().add(minuteGap, 'minute').toISOString();
 };
 
 const generateDateTo = () => {
-  const minuteGap = getRandomInteger(MAX_MINUTE_GAP + 1, MAX_MINUTE_GAP * 2);
+  const minuteGap = getRandomInteger(MAX_MINUTE_GAP, MAX_MINUTE_GAP * 2);
   return dayjs().add(minuteGap, 'minute').toISOString();
 };
 
