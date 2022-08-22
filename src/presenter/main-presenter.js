@@ -15,6 +15,8 @@ export default class MainPresenter {
 
   #mainComponent = new MainView();
   #tripListComponent = new TripListView();
+  #sortComponent = new SortView();
+  #noPointComponent = new NoPointView();
 
   #mainPoints = [];
   #destinations = [];
@@ -33,6 +35,14 @@ export default class MainPresenter {
     this.#offers = [...this.#offersModel.offers];
 
     this.#renderMain();
+  };
+
+  #renderNoPoints = () => {
+    render(this.#noPointComponent, this.#mainComponent.element);
+  };
+
+  #renderSort = () => {
+    render(this.#sortComponent, this.#mainComponent.element);
   };
 
   #renderPoint = (point) => {
@@ -72,34 +82,41 @@ export default class MainPresenter {
     render(pointComponent, this.#tripListComponent.element);
   };
 
+  #renderPoints = () => {
+    for (let i = 0; i < this.#mainPoints.length; i++) {
+
+      const filterOffers = () => {
+        const pointOffers = this.#offers.find((offer) => offer.type === this.#mainPoints[i].type);
+        const offersToAd = pointOffers.offers.filter((offer) => this.#mainPoints[i].offers.includes(offer.id));
+        return {
+          type: pointOffers.type,
+          offers: offersToAd,
+        };
+      };
+
+      const destination = this.#destinations.find((dest) => dest.id === this.#mainPoints[i].destination);
+
+      this.#mainPoints[i].destination = destination;
+      this.#mainPoints[i].offers = filterOffers();
+
+      this.#renderPoint(this.#mainPoints[i]);
+    }
+  };
+
+  #renderTripList = () => {
+    render(this.#tripListComponent, this.#mainComponent.element);
+    this.#renderPoints();
+  };
+
   #renderMain = () => {
     render(this.#mainComponent, this.#mainContainer);
 
     if (this.#mainPoints.length < 1) {
-      render (new NoPointView, this.#mainComponent.element);
-    } else {
-
-      render(new SortView(), this.#mainComponent.element);
-      render(this.#tripListComponent, this.#mainComponent.element);
-
-      for (let i = 0; i < this.#mainPoints.length; i++) {
-
-        const filterOffers = () => {
-          const pointOffers = this.#offers.find((offer) => offer.type === this.#mainPoints[i].type);
-          const offersToAd = pointOffers.offers.filter((offer) => this.#mainPoints[i].offers.includes(offer.id));
-          return {
-            type: pointOffers.type,
-            offers: offersToAd,
-          };
-        };
-
-        const destination = this.#destinations.find((dest) => dest.id === this.#mainPoints[i].destination);
-
-        this.#mainPoints[i].destination = destination;
-        this.#mainPoints[i].offers = filterOffers();
-
-        this.#renderPoint(this.#mainPoints[i]);
-      }
+      this.#renderNoPoints();
+      return;
     }
+
+    this.#renderSort();
+    this.#renderTripList();
   };
 }
