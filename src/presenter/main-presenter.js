@@ -42,6 +42,10 @@ export default class MainPresenter {
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
+  #handleModeChange = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
   #renderNoPoints = () => {
     render(this.#noPointComponent, this.#mainComponent.element);
   };
@@ -51,7 +55,7 @@ export default class MainPresenter {
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#tripListComponent.element, this.#handlePointChange);
+    const pointPresenter = new PointPresenter(this.#tripListComponent.element, this.#handlePointChange, this.#handleModeChange);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
