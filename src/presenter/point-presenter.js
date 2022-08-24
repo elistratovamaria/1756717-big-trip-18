@@ -5,14 +5,16 @@ import { isEscapeKey } from '../utils/common.js';
 
 export default class PointPresenter {
   #tripListContainer = null;
+  #changeData = null;
 
   #pointComponent = null;
   #pointEditComponent = null;
 
   #point = null;
 
-  constructor(tripListContainer) {
+  constructor(tripListContainer, changeData) {
     this.#tripListContainer = tripListContainer;
+    this.#changeData = changeData;
   }
 
   init = (point) => {
@@ -25,6 +27,7 @@ export default class PointPresenter {
     this.#pointEditComponent = new PointEditView(point);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
+    this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setClickHandler(this.#handleClick);
 
@@ -71,12 +74,17 @@ export default class PointPresenter {
     this.#replacePointToForm();
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (point) => {
+    this.#changeData(point);
     this.#replaceFormToPoint();
   };
 
   #handleClick = () => {
     this.#replaceFormToPoint();
+  };
+
+  #handleFavoriteClick = () => {
+    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
   };
 }
 

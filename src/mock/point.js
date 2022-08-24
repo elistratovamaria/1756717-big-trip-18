@@ -1,6 +1,7 @@
 import { getRandomInteger, getArrayRandomLength } from '../utils/common.js';
 import { MAX_MINUTE_GAP, destinationId, mockPrice, TYPES } from '../const.js';
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 
 const generateDateFrom = () => {
   const minuteGap = getRandomInteger(-MAX_MINUTE_GAP, MAX_MINUTE_GAP);
@@ -21,6 +22,7 @@ const generateOffersID = () => {
 };
 
 const generatePoint = () => ({
+  id: nanoid(),
   basePrice: getRandomInteger(mockPrice.MIN, mockPrice.MAX),
   dateFrom: generateDateFrom(),
   dateTo: generateDateTo(),

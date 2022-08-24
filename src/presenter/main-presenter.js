@@ -4,6 +4,7 @@ import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
 import { render } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils/common.js';
 
 export default class MainPresenter {
   #mainContainer = null;
@@ -19,6 +20,7 @@ export default class MainPresenter {
   #mainPoints = [];
   #destinations = [];
   #offers = [];
+  #pointPresenter = new Map();
 
   constructor(mainContainer, pointsModel, destinationsModel, offersModel) {
     this.#mainContainer = mainContainer;
@@ -35,6 +37,11 @@ export default class MainPresenter {
     this.#renderMain();
   };
 
+  #handlePointChange = (updatedPoint) => {
+    this.#mainPoints = updateItem(this.#mainPoints, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+  };
+
   #renderNoPoints = () => {
     render(this.#noPointComponent, this.#mainComponent.element);
   };
@@ -44,8 +51,9 @@ export default class MainPresenter {
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#tripListComponent.element);
+    const pointPresenter = new PointPresenter(this.#tripListComponent.element, this.#handlePointChange);
     pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
   };
 
   #renderPoints = () => {
@@ -67,6 +75,11 @@ export default class MainPresenter {
 
       this.#renderPoint(this.#mainPoints[i]);
     }
+  };
+
+  #clearPointList = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
   };
 
   #renderTripList = () => {
