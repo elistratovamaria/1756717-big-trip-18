@@ -2,8 +2,10 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointEditDate } from '../utils/point.js';
 import { TYPES, OFFERS_OPTIONS } from '../const.js';
 
-const createPointEditTemplate = (point) => {
+const createPointEditTemplate = (point, offersData, destinationData) => {
   const { dateFrom, dateTo, type, destination, basePrice, offers } = point;
+  const { description, name } = destinationData.find((elem) => (elem.id === destination));
+
 
   const makeTypeToUpperCase = (typeToChange) => typeToChange[0].toUpperCase() + typeToChange.slice(1);
 
@@ -23,9 +25,13 @@ const createPointEditTemplate = (point) => {
     return offerTitle in OFFERS_OPTIONS ? OFFERS_OPTIONS[offerTitle] : 'default';
   };
 
-  const createEditOffersTemplate = () => offers.offers
+  const isOfferChecked = (offer) => offers.includes(offer.id) ? 'checked' : '';
+
+  const offersByType = offersData.find((elem) => elem.type === type).offers;
+
+  const createEditOffersTemplate = () => offersByType
     .map((offer) => `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${getOfferOption(offer)}-1" type="checkbox" name="event-offer-luggage">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${getOfferOption(offer)}-1" type="checkbox" name="event-offer-luggage" ${isOfferChecked(offer)}>
         <label class="event__offer-label" for="event-offer-${getOfferOption(offer)}-1">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -58,7 +64,7 @@ const createPointEditTemplate = (point) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.nameDest}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
           <datalist id="destination-list-1">
             <option value="Amsterdam" selected></option>
             <option value="Geneva"></option>
@@ -99,7 +105,7 @@ const createPointEditTemplate = (point) => {
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${destination.description}</p>
+          <p class="event__destination-description">${description}</p>
         </section>
       </section>
     </form>
@@ -109,14 +115,18 @@ const createPointEditTemplate = (point) => {
 
 export default class PointEditView extends AbstractView {
   #point = null;
+  #offers = null;
+  #destinations = null;
 
-  constructor(point) {
+  constructor(point, offers, destinations) {
     super();
     this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
   }
 
   get template() {
-    return createPointEditTemplate(this.#point);
+    return createPointEditTemplate(this.#point, this.#offers, this.#destinations);
   }
 
   setFormSubmitHandler = (callback) => {

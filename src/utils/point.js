@@ -42,4 +42,16 @@ const isPointInFuture = ({dateFrom, dateTo}) => dayjs().isSame(dayjs(dateFrom)) 
 
 const isPointInPast = ({dateFrom, dateTo}) => dayjs().isAfter(dayjs(dateTo)) || (dayjs().isAfter(dayjs(dateFrom)) && dayjs().isBefore(dayjs(dateTo)));
 
-export { humanizePointEditDate, humanizePointEventDate, humanizePointRouteTime, humanizeRouteDuration, isPointInFuture, isPointInPast };
+const sortByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+
+const sortByTime = (pointA, pointB) => getRouteDurationInMinutes(pointB.dateFrom, pointB.dateTo) - getRouteDurationInMinutes(pointA.dateFrom, pointA.dateTo);
+
+const sortByDefault = (pointA, pointB) => {
+  if (dayjs(pointB.dateFrom).isAfter(dayjs(pointA.dateFrom))) {
+    return 1;
+  } else {
+    return -1;
+  }
+};
+
+export { humanizePointEditDate, humanizePointEventDate, humanizePointRouteTime, humanizeRouteDuration, isPointInFuture, isPointInPast, sortByPrice, sortByTime, sortByDefault };

@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointRouteTime, humanizePointEventDate, humanizeRouteDuration } from '../utils/point.js';
 
-const createPointTemplate = (point) => {
+const createPointTemplate = (point, offersData, destinationData) => {
   const { dateFrom, dateTo, type, destination, basePrice, offers, isFavorite } = point;
 
   const humanDateFrom = humanizePointRouteTime(dateFrom);
@@ -11,18 +11,29 @@ const createPointTemplate = (point) => {
   const humanRouteDuration = humanizeRouteDuration(dateFrom, dateTo);
 
   const makeTypeToUpperCase = () => type[0].toUpperCase() + type.slice(1);
+
+  const name = destinationData.find((dest) => (dest.id === destination)).name;
+
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
 
-  const createOffersTemplate = () => offers.offers
-    .map((offer) =>
-      `<li class="event__offer">
+  const createOffersTemplate = () => {
+    const offersToAd = [];
+    const offersByType = offersData.find((elem) => elem.type === type).offers;
+    for (const offer of offersByType) {
+      if (offers.includes(offer.id)) {
+        offersToAd.push(offer);
+      }
+    }
+    return offersToAd
+      .map((offer) =>
+        `<li class="event__offer">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price}</span>
           </li>`
-    )
-    .join('');
-
+      )
+      .join('');
+  };
 
   return (
     `<li class="trip-events__item">
@@ -31,7 +42,7 @@ const createPointTemplate = (point) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${makeTypeToUpperCase()} ${destination.nameDest}</h3>
+      <h3 class="event__title">${makeTypeToUpperCase()} ${name}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${dateFrom}">${humanDateFrom}</time>
@@ -63,14 +74,18 @@ const createPointTemplate = (point) => {
 
 export default class PointView extends AbstractView {
   #point = null;
+  #offers = null;
+  #destinations = null;
 
-  constructor(point) {
+  constructor(point, offers, destinations) {
     super();
     this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
   }
 
   get template() {
-    return createPointTemplate(this.#point);
+    return createPointTemplate(this.#point, this.#offers, this.#destinations);
   }
 
   setEditClickHandler = (callback) => {
