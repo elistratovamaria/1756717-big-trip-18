@@ -12,7 +12,7 @@ const generateDescription = () => {
 const generateDestination = (i) => ({
   id: i + 1,
   description: generateDescription(),
-  nameDest: DESTINATION_NAMES[getRandomInteger(0, DESTINATION_NAMES.length - 1)],
+  name: DESTINATION_NAMES[getRandomInteger(0, DESTINATION_NAMES.length - 1)],
   pictures: [
     {
       src: `http://picsum.photos/248/152?r=${Math.random()}`,
