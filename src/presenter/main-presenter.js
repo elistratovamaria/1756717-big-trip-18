@@ -2,7 +2,7 @@ import MainView from '../view/main-view.js';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
-import { render } from '../framework/render.js';
+import { render, remove } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import { updateItem } from '../utils/common.js';
 import { sortByDefault, sortByPrice, sortByTime } from '../utils/point.js';
@@ -35,7 +35,7 @@ export default class MainPresenter {
 
   init = () => {
     this.#mainPoints = [...this.#pointsModel.points];
-    this.#sourcedPoints = [...this.#pointsModel.points];
+    this.#sourcedPoints = this.#mainPoints.sort(sortByDefault);
     this.#destinations = [...this.#destinationsModel.destinations];
     this.#offers = [...this.#offersModel.offers];
 
@@ -84,7 +84,7 @@ export default class MainPresenter {
 
   #renderSort = (sortType = SortType.DEFAULT) => {
     if (this.#sortComponent instanceof SortView) {
-      this.#sortComponent.clear();
+      remove(this.#sortComponent);
     }
     this.#sortComponent = new SortView(sortType);
     render(this.#sortComponent, this.#mainComponent.element);

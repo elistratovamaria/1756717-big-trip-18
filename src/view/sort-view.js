@@ -51,10 +51,6 @@ export default class SortView extends AbstractView {
     evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   };
-
-  clear = () => {
-    document.querySelector('.trip-events__trip-sort').remove();
-  };
 }
 
 
