@@ -18,7 +18,7 @@ const createPointTemplate = (point, offersData, destinationData) => {
 
   const createOffersTemplate = () => {
     const offersToAd = [];
-    const offersByType = offersData.find((elem) => elem.type === type).offers;
+    const offersByType = offersData[type];
     for (const offer of offersByType) {
       if (offers.includes(offer.id)) {
         offersToAd.push(offer);

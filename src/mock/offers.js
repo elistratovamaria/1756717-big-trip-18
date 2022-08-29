@@ -25,4 +25,8 @@ const generateMockOffersByType = () => {
   return mockOffersByType;
 };
 
-export { generateMockOffersByType };
+const offers = generateMockOffersByType();
+
+const resultOffers = Object.assign.apply({}, offers.map( (v) => ( {[v.type]: v.offers} ) ) );
+
+export { resultOffers };

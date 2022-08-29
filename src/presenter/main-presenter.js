@@ -37,7 +37,7 @@ export default class MainPresenter {
     this.#mainPoints = [...this.#pointsModel.points];
     this.#sourcedPoints = this.#mainPoints.sort(sortByDefault);
     this.#destinations = [...this.#destinationsModel.destinations];
-    this.#offers = [...this.#offersModel.offers];
+    this.#offers = this.#offersModel.offers;
 
     this.#renderMain();
   };

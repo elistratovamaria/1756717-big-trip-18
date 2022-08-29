@@ -27,7 +27,7 @@ const createPointEditTemplate = (point, offersData, destinationData) => {
 
   const isOfferChecked = (offer) => offers.includes(offer.id) ? 'checked' : '';
 
-  const offersByType = offersData.find((elem) => elem.type === type).offers;
+  const offersByType = offersData[type];
 
   const createEditOffersTemplate = () => offersByType
     .map((offer) => `<div class="event__offer-selector">
