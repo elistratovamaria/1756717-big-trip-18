@@ -2,10 +2,8 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointEditDate } from '../utils/point.js';
 import { TYPES, OFFERS_OPTIONS } from '../const.js';
 
-const createPointEditTemplate = (point/*, offersData, destinationData*/) => {
-  const { dateFrom, dateTo, type, /*destination,*/ basePrice, offers, checkedOffersByType, checkedDestination } = point;
-  /*const { description, name } = destinationData.find((elem) => (elem.id === destination));*/
-
+const createPointEditTemplate = (point) => {
+  const { dateFrom, dateTo, type, basePrice, offers, checkedOffersByType, checkedDestination } = point;
 
   const makeTypeToUpperCase = (typeToChange) => typeToChange[0].toUpperCase() + typeToChange.slice(1);
 
@@ -26,9 +24,6 @@ const createPointEditTemplate = (point/*, offersData, destinationData*/) => {
   };
 
   const isOfferChecked = (offer) => offers.includes(offer.id) ? 'checked' : '';
-
-  /*const offersByType = offersData[type];*/
-  console.log(Array.from(Object.values(offersByType)[0]));
 
   const createEditOffersTemplate = () => checkedOffersByType
     .map((offer) => `<div class="event__offer-selector">
@@ -65,7 +60,7 @@ const createPointEditTemplate = (point/*, offersData, destinationData*/) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${checkedDestination.name}}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${checkedDestination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
             <option value="Amsterdam" selected></option>
             <option value="Geneva"></option>
@@ -115,20 +110,14 @@ const createPointEditTemplate = (point/*, offersData, destinationData*/) => {
 };
 
 export default class PointEditView extends AbstractStatefulView {
-  /*#point = null;
-  #offers = null;
-  #destinations = null;*/
 
   constructor(point, offers, destinations) {
     super();
     this._state = PointEditView.parsePointToState(point, offers, destinations);
-    /*this.#point = point;
-    this.#offers = offers;
-    this.#destinations = destinations;*/
   }
 
   get template() {
-    return createPointEditTemplate(this._state/*, this.#offers, this.#destinations*/);
+    return createPointEditTemplate(this._state);
   }
 
   setFormSubmitHandler = (callback) => {
