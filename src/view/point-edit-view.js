@@ -145,6 +145,13 @@ export default class PointEditView extends AbstractStatefulView {
   constructor(point = BLANC_POINT, offers, destinations) {
     super();
     this._state = PointEditView.parsePointToState(point, offers, destinations);
+
+    const typeElements = this.element.querySelectorAll('.event__type-input');
+    typeElements.forEach((typeElement) => typeElement
+      .addEventListener('click', this.#typeToggleHandler)
+    );
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('click', this.#destinationToggleHandler);
   }
 
   get template() {
@@ -154,6 +161,14 @@ export default class PointEditView extends AbstractStatefulView {
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('.event__save-btn').addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  #typeToggleHandler = () => {
+
+  };
+
+  #destinationToggleHandler = () => {
+
   };
 
   #formSubmitHandler = (evt) => {
