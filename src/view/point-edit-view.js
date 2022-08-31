@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointEditDate } from '../utils/point.js';
-import { TYPES, OFFERS_OPTIONS } from '../const.js';
+import { TYPES, OFFERS_OPTIONS, BLANC_POINT } from '../const.js';
 
 const createPointEditTemplate = (point) => {
   const { dateFrom, dateTo, type, basePrice, offers, checkedOffersByType, checkedDestination } = point;
@@ -142,7 +142,7 @@ const createPointEditTemplate = (point) => {
 
 export default class PointEditView extends AbstractStatefulView {
 
-  constructor(point, offers, destinations) {
+  constructor(point = BLANC_POINT, offers, destinations) {
     super();
     this._state = PointEditView.parsePointToState(point, offers, destinations);
   }
