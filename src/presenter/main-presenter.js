@@ -45,7 +45,7 @@ export default class MainPresenter {
   #handlePointChange = (updatedPoint) => {
     this.#mainPoints = updateItem(this.#mainPoints, updatedPoint);
     this.#sourcedPoints = updateItem(this.#sourcedPoints, updatedPoint);
-    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint, this.#offers, this.#destinations);
   };
 
   #sortPoints = (sortType) => {
