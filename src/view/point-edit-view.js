@@ -35,7 +35,48 @@ const createPointEditTemplate = (point) => {
         </label>
       </div>`).join('');
 
-  const offersTemplate = createEditOffersTemplate();
+  const createEditOffersWrapperTemplate = () => {
+    if (checkedOffersByType) {
+      return (` <section class="event__section  event__section--offers">
+                  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+                  <div class="event__available-offers">
+                    ${createEditOffersTemplate()};
+                  </div>
+                </section>`);
+    }
+  };
+
+  const createDestinationDescriptionTemplate = () => {
+    if (checkedDestination.description) {
+      return (`<p class="event__destination-description">${checkedDestination.description}</p>`);
+    }
+  };
+
+  const createPicturesTemplate = (pictures) => pictures
+    .map((pictureToShow) => `<img class="event__photo" src="${pictureToShow.src}" alt="${pictureToShow.description}">`)
+    .join('');
+
+  const createDestinationPicturesTemplate = () => {
+    if (checkedDestination.pictures) {
+      return (
+        `<div class="event__photos-container">
+            <div class="event__photos-tape">
+              ${createPicturesTemplate(checkedDestination.pictures)}
+            </div>
+          </div>`
+      );
+    }
+  };
+
+  const createEditDestinationTemplate = () => {
+    if (checkedDestination.description || checkedDestination.pictures) {
+      return (`<section class="event__section  event__section--destination">
+                <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+                ${createDestinationDescriptionTemplate()}
+                ${createDestinationPicturesTemplate()}
+              </section>`);
+    }
+  };
 
   return (
     `<li class="trip-events__item">
@@ -91,18 +132,8 @@ const createPointEditTemplate = (point) => {
         </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-          <div class="event__available-offers">
-            ${offersTemplate}
-          </div>
-        </section>
-
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${checkedDestination.description}</p>
-        </section>
+        ${createEditOffersWrapperTemplate()}
+        ${createEditDestinationTemplate()}
       </section>
     </form>
   </li>`
@@ -140,13 +171,14 @@ export default class PointEditView extends AbstractStatefulView {
     this._callback.click();
   };
 
-  static parsePointToState = (point, offers, destinations) => ({...point,
+  static parsePointToState = (point, offers, destinations) => ({
+    ...point,
     checkedOffersByType: offers[point.type],
     checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
   });
 
   static parseStateToPoint = (state, checkedOffersByType, checkedDestination) => {
-    const point = {...state};
+    const point = { ...state };
 
     point.offers = Array.from(Object.values(checkedOffersByType)[0]);
 
