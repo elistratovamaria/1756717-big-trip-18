@@ -27,7 +27,7 @@ const createPointEditTemplate = (point) => {
 
   const createEditOffersTemplate = () => checkedOffersByType
     .map((offer) => `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${getOfferOption(offer)}-1" type="checkbox" name="event-offer-luggage" ${isOfferChecked(offer)}>
+        <input class="event__offer-checkbox  visually-hidden" data-offer-name="${offer.title}" id="event-offer-${getOfferOption(offer)}-1" type="checkbox" name="event-offer-luggage" ${isOfferChecked(offer)}>
         <label class="event__offer-label" for="event-offer-${getOfferOption(offer)}-1">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -40,7 +40,7 @@ const createPointEditTemplate = (point) => {
       return (` <section class="event__section  event__section--offers">
                   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                   <div class="event__available-offers">
-                    ${createEditOffersTemplate()};
+                    ${createEditOffersTemplate()}
                   </div>
                 </section>`);
     }
@@ -145,34 +145,73 @@ const createPointEditTemplate = (point) => {
 };
 
 export default class PointEditView extends AbstractStatefulView {
+  #destinations = null;
+  #offers = null;
 
   constructor(point = BLANC_POINT, offers, destinations) {
     super();
     this._state = PointEditView.parsePointToState(point, offers, destinations);
 
-    const typeElements = this.element.querySelectorAll('.event__type-input');
-    typeElements.forEach((typeElement) => typeElement
-      .addEventListener('click', this.#typeToggleHandler)
-    );
-    this.element.querySelector('.event__input--destination')
-      .addEventListener('click', this.#destinationToggleHandler);
+    this.#destinations = destinations;
+    this.#offers = offers;
+
+    this.#setInnerHandlers();
   }
 
   get template() {
     return createPointEditTemplate(this._state);
   }
 
+  reset = (point, offers, destinations) => {
+    this.updateElement(
+      PointEditView.parsePointToState(point, offers, destinations),
+    );
+  };
+
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('.event__save-btn').addEventListener('submit', this.#formSubmitHandler);
   };
 
-  #typeToggleHandler = () => {
-
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
   };
 
-  #destinationToggleHandler = () => {
+  #offerToggleHandler = (evt) => {
+    let updateCheckedOffers = [];
+    const index = this.#offers[this._state.type].findIndex((elem) => elem.title === evt.target.dataset.offerName);
+    updateCheckedOffers = [
+      ...this.#offers[this._state.type].slice(0, index),
+      this.#offers[this._state.type][index],
+      ...this.#offers[this._state.type].slice(index + 1)
+    ];
+    this._setState({
+      offers: updateCheckedOffers
+    });
+  };
 
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      basePrice: evt.target.value,
+    });
+  };
+
+  #typeToggleHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      type: evt.target.value,
+      offers: this.#offers[evt.target.value],
+    });
+  };
+
+  #destinationToggleHandler = (evt) => {
+    evt.preventDefault();
+    const destinationObject = this.#destinations.find((elem) => elem.name === evt.target.value);
+    this.updateElement({
+      destination: destinationObject.id,
+    });
   };
 
   #formSubmitHandler = (evt) => {
@@ -180,14 +219,27 @@ export default class PointEditView extends AbstractStatefulView {
     this._callback.formSubmit(this._state);
   };
 
-  setClickHandler = (callback) => {
-    this._callback.click = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
-  };
-
   #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
+  };
+
+  #setInnerHandlers = () => {
+    Array.from(this.element.querySelectorAll('.event__type-input')).forEach((typeElement) => typeElement
+      .addEventListener('click', this.#typeToggleHandler)
+    );
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationToggleHandler);
+    this.element.querySelector('.event__input--price')
+      .addEventListener('input', this.#priceInputHandler);
+    Array.from(this.element.querySelectorAll('.event__offer-checkbox')).forEach((offerElement) => offerElement
+      .addEventListener('click', this.#offerToggleHandler)
+    );
+  };
+
+  setClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   };
 
   static parsePointToState = (point, offers, destinations) => ({
