@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointEditDate } from '../utils/point.js';
-import { TYPES, OFFERS_OPTIONS, BLANC_POINT } from '../const.js';
+import { TYPES, OFFERS_OPTIONS, BLANC_POINT, DESTINATION_NAMES } from '../const.js';
 
 const createPointEditTemplate = (point) => {
   const { dateFrom, dateTo, type, basePrice, offers, checkedOffersByType, checkedDestination } = point;
@@ -78,6 +78,12 @@ const createPointEditTemplate = (point) => {
     }
   };
 
+  const isSelectedDestinationName = (name) => checkedDestination.name === name ? 'selected' : '';
+
+  const createDestinationOptionTemplate = () => DESTINATION_NAMES
+    .map((name) => `<option value="${name}" ${isSelectedDestinationName(name)}></option>`)
+    .join('');
+
   return (
     `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -103,9 +109,7 @@ const createPointEditTemplate = (point) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${checkedDestination.name}" list="destination-list-1">
           <datalist id="destination-list-1">
-            <option value="Amsterdam" selected></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+            ${createDestinationOptionTemplate()}
           </datalist>
         </div>
 

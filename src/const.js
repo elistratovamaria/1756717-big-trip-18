@@ -38,6 +38,7 @@ const DESTINATION_NAMES = [
   'Chamonix',
   'Geneva',
   'Amsterdam',
+  'Moscow',
 ];
 
 const MAX_LENGTH_DESTINATION_ARRAY = 20;
