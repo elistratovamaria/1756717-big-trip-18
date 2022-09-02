@@ -183,25 +183,30 @@ export default class PointEditView extends AbstractStatefulView {
 
   #offerToggleHandler = (evt) => {
     const allOffers = this.#offers[this._state.type];
-    console.log(typeof allOffers[0].id);
     const allCheckedOffers = allOffers.filter((offer) => this._state.offers.includes(offer.id));
-    console.log(typeof Number(evt.target.dataset.offerId));
     const allCheckedOffersId = allCheckedOffers.map((offer) => offer.id);
-    const newCheckedOfferIndex = allOffers
+
+    const newCheckedOfferIndexInAll = allOffers
       .findIndex((offer) => offer.id === Number(evt.target.dataset.offerId));
-    const newCheckedOffer = this.#offers[this._state.type][newCheckedOfferIndex];
+
+    const newCheckedOffer = this.#offers[this._state.type][newCheckedOfferIndexInAll];
+
     const getUpdateCheckedOffers = () => {
       const isChecked = () => allCheckedOffersId.includes(newCheckedOffer.id);
-      if (!isChecked) {
+      const isCheckedBoolean = isChecked();
+      if (!isCheckedBoolean) {
         allCheckedOffers.push(newCheckedOffer);
       } else {
-        allCheckedOffers.splice(newCheckedOfferIndex);
+        const newCheckedOfferIndexInCheckedOffers = allCheckedOffers
+          .findIndex((offer) => offer.id === newCheckedOffer.id);
+        allCheckedOffers.splice(newCheckedOfferIndexInCheckedOffers, 1);
       }
       return allCheckedOffers;
     };
     const updateCheckedOffers = getUpdateCheckedOffers();
     this._setState({
-      checkedOffers: updateCheckedOffers
+      checkedOffers: updateCheckedOffers,
+      offers: allCheckedOffers.map((offer) => offer.id),
     });
   };
 
@@ -218,6 +223,7 @@ export default class PointEditView extends AbstractStatefulView {
       type: evt.target.value,
       offersByType: this.#offers[evt.target.value],
       checkedOffers: [],
+      offers: [],
     });
   };
 
