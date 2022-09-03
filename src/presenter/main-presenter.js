@@ -37,7 +37,7 @@ export default class MainPresenter {
     this.#mainPoints = [...this.#pointsModel.points];
     this.#sourcedPoints = this.#mainPoints.sort(sortByDefault);
     this.#destinations = [...this.#destinationsModel.destinations];
-    this.#offers = [...this.#offersModel.offers];
+    this.#offers = this.#offersModel.offers;
 
     this.#renderMain();
   };
@@ -45,7 +45,7 @@ export default class MainPresenter {
   #handlePointChange = (updatedPoint) => {
     this.#mainPoints = updateItem(this.#mainPoints, updatedPoint);
     this.#sourcedPoints = updateItem(this.#sourcedPoints, updatedPoint);
-    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint, this.#offers, this.#destinations);
   };
 
   #sortPoints = (sortType) => {

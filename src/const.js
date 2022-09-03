@@ -38,6 +38,7 @@ const DESTINATION_NAMES = [
   'Chamonix',
   'Geneva',
   'Amsterdam',
+  'Moscow',
 ];
 
 const MAX_LENGTH_DESTINATION_ARRAY = 20;
@@ -100,4 +101,14 @@ const SortType = {
   PRICE: 'price',
 };
 
-export { POINTS_AMOUNT, MAX_MINUTE_GAP, destinationId, MAX_LENGTH_DESTINATION_ARRAY, descriptionLength, offerId, mockPrice, OFFER_TITLES, DESCRIPTIONS_VARIANTS, DESTINATION_NAMES, mockOfferPrice, TYPES, MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS, FilterType, Mode, SortType };
+const BLANC_POINT = {
+  basePrice: null,
+  dateFrom: null,
+  dateTo: null,
+  destination: null,
+  isFavorite: false,
+  offers: [],
+  type: null,
+};
+
+export { POINTS_AMOUNT, MAX_MINUTE_GAP, destinationId, MAX_LENGTH_DESTINATION_ARRAY, descriptionLength, offerId, mockPrice, OFFER_TITLES, DESCRIPTIONS_VARIANTS, DESTINATION_NAMES, mockOfferPrice, TYPES, MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS, FilterType, Mode, SortType, BLANC_POINT };

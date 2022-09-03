@@ -9,12 +9,16 @@ export default class PointPresenter {
   #changeData = null;
   #changeMode = null;
 
+  #destinationsModel = null;
+  #offersModel = null;
+
   #pointComponent = null;
   #pointEditComponent = null;
 
   #point = null;
   #offers = null;
   #destinations = null;
+
   #mode = Mode.DEFAULT;
 
   constructor(tripListContainer, changeData, changeMode) {
@@ -63,6 +67,7 @@ export default class PointPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point, this.#offers, this.#destinations);
       this.#replaceFormToPoint();
     }
   };
@@ -83,6 +88,7 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point, this.#offers, this.#destinations);
       this.#replaceFormToPoint();
     }
   };
