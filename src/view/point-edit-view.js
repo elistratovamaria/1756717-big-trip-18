@@ -191,7 +191,7 @@ export default class PointEditView extends AbstractStatefulView {
 
     const newCheckedOffer = this.#offers[this._state.type][newCheckedOfferIndexInAll];
 
-    const getUpdateCheckedOffers = () => {
+    const getUpdatedCheckedOffers = () => {
       const isChecked = () => allCheckedOffersId.includes(newCheckedOffer.id);
       const isCheckedBoolean = isChecked();
       if (!isCheckedBoolean) {
@@ -203,9 +203,9 @@ export default class PointEditView extends AbstractStatefulView {
       }
       return allCheckedOffers;
     };
-    const updateCheckedOffers = getUpdateCheckedOffers();
+    const updatedCheckedOffers = getUpdatedCheckedOffers();
     this._setState({
-      checkedOffers: updateCheckedOffers,
+      checkedOffers: updatedCheckedOffers,
       offers: allCheckedOffers.map((offer) => offer.id),
     });
   };
