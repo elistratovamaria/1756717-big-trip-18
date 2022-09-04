@@ -1,6 +1,8 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { humanizePointEditDate } from '../utils/point.js';
+import { humanizePointEditDate, isSubmitDisabled } from '../utils/point.js';
 import { TYPES, OFFERS_OPTIONS, BLANC_POINT, DESTINATION_NAMES } from '../const.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createPointEditTemplate = (point) => {
   const { dateFrom, dateTo, type, basePrice, offersByType, checkedOffers, checkedDestination } = point;
@@ -132,7 +134,7 @@ const createPointEditTemplate = (point) => {
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled(dateTo, dateFrom) ? 'disabled' : ''}>Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -150,6 +152,7 @@ const createPointEditTemplate = (point) => {
 export default class PointEditView extends AbstractStatefulView {
   #destinations = null;
   #offers = null;
+  #datepicker = null;
 
   constructor(point = BLANC_POINT, offers, destinations) {
     super();
@@ -159,11 +162,34 @@ export default class PointEditView extends AbstractStatefulView {
     this.#offers = offers;
 
     this.#setInnerHandlers();
+    this.#setDateFrompicker();
+    this.#setDateTopicker();
   }
 
   get template() {
     return createPointEditTemplate(this._state);
   }
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  };
+
+  #dueDateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #dueDateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
 
   reset = (point, offers, destinations) => {
     this.updateElement(
@@ -179,6 +205,8 @@ export default class PointEditView extends AbstractStatefulView {
   _restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.#setDateFrompicker();
+    this.#setDateTopicker();
   };
 
   #offerToggleHandler = (evt) => {
@@ -237,6 +265,32 @@ export default class PointEditView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(this._state);
+  };
+
+  #setDateFrompicker = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('[name = "event-start-time"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dueDateFromChangeHandler,
+        enableTime: true,
+        'time_24hr': true,
+      },
+    );
+  };
+
+  #setDateTopicker = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('[name = "event-end-time"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateTo,
+        onChange: this.#dueDateToChangeHandler,
+        enableTime: true,
+        'time_24hr': true,
+      },
+    );
   };
 
   #clickHandler = (evt) => {
