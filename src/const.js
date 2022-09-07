@@ -111,4 +111,16 @@ const BLANC_POINT = {
   type: null,
 };
 
-export { POINTS_AMOUNT, MAX_MINUTE_GAP, destinationId, MAX_LENGTH_DESTINATION_ARRAY, descriptionLength, offerId, mockPrice, OFFER_TITLES, DESCRIPTIONS_VARIANTS, DESTINATION_NAMES, mockOfferPrice, TYPES, MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS, FilterType, Mode, SortType, BLANC_POINT };
+const UserAction = {
+  UPDATE_TASK: 'UPDATE_TASK',
+  ADD_TASK: 'ADD_TASK',
+  DELETE_TASK: 'DELETE_TASK',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export { POINTS_AMOUNT, MAX_MINUTE_GAP, destinationId, MAX_LENGTH_DESTINATION_ARRAY, descriptionLength, offerId, mockPrice, OFFER_TITLES, DESCRIPTIONS_VARIANTS, DESTINATION_NAMES, mockOfferPrice, TYPES, MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS, FilterType, Mode, SortType, BLANC_POINT, UserAction, UpdateType };
