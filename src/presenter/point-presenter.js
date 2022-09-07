@@ -2,6 +2,7 @@ import { render, replace, remove } from '../framework/render.js';
 import PointView from '../view/point-view.js';
 import PointEditView from '../view/point-edit-view.js';
 import { isEscapeKey } from '../utils/common.js';
+import { isDatesEqual, isPriceEqual, isDurationEqual } from '../utils/point.js';
 import { Mode } from '../const.js';
 import { UserAction, UpdateType} from '../const.js';
 
@@ -43,6 +44,7 @@ export default class PointPresenter {
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setClickHandler(this.#handleClick);
+    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointComponent, this.#tripListContainer);
@@ -98,11 +100,16 @@ export default class PointPresenter {
     this.#replacePointToForm();
   };
 
-  #handleFormSubmit = (point) => {
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate =
+      !isDatesEqual(this.#point, update) ||
+      !isPriceEqual(this.#point, update) ||
+      !isDurationEqual(this.#point, update);
+
     this.#changeData(
-      UserAction.UPDATE_TASK,
-      UpdateType.MINOR,
-      point,
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
     );
     this.#replaceFormToPoint();
   };
@@ -113,11 +120,17 @@ export default class PointPresenter {
 
   #handleFavoriteClick = () => {
     this.#changeData(
-      UserAction.UPDATE_TASK,
+      UserAction.UPDATE_POINT,
       UpdateType.MINOR,
       {...this.#point, isFavorite: !this.#point.isFavorite},
     );
   };
+
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+  };
 }
-
-

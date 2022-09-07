@@ -47,7 +47,7 @@ const sortByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 const sortByTime = (pointA, pointB) => getRouteDurationInMinutes(pointB.dateFrom, pointB.dateTo) - getRouteDurationInMinutes(pointA.dateFrom, pointA.dateTo);
 
 const sortByDefault = (pointA, pointB) => {
-  if (dayjs(pointB.dateFrom).isAfter(dayjs(pointA.dateFrom))) {
+  if (dayjs(pointA.dateFrom).isAfter(dayjs(pointB.dateFrom))) {
     return 1;
   } else {
     return -1;
@@ -56,4 +56,14 @@ const sortByDefault = (pointA, pointB) => {
 
 const isSubmitDisabled = (dateTo, dateFrom) => dayjs(dateTo).diff(dayjs(dateFrom)) <= 0;
 
-export { humanizePointEditDate, humanizePointEventDate, humanizePointRouteTime, humanizeRouteDuration, isPointInFuture, isPointInPast, sortByPrice, sortByTime, sortByDefault, isSubmitDisabled };
+const isDatesEqual = (pointA, pointB) => dayjs(pointA.dateFrom).isSame(pointB.dateFrom, 'D');
+
+const isPriceEqual = (pointA, pointB) => pointA.basePrice === pointB.basePrice;
+
+const isDurationEqual = (pointA, pointB) => {
+  const durationPointA = getRouteDurationInMinutes(pointA.dateFrom, pointA.dateTo);
+  const durationPointB = getRouteDurationInMinutes(pointB.dateFrom, pointB.dateTo);
+  return durationPointA === durationPointB;
+};
+
+export { humanizePointEditDate, humanizePointEventDate, humanizePointRouteTime, humanizeRouteDuration, isPointInFuture, isPointInPast, sortByPrice, sortByTime, sortByDefault, isSubmitDisabled, isDatesEqual, isPriceEqual, isDurationEqual };
