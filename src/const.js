@@ -123,4 +123,10 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export { POINTS_AMOUNT, MAX_MINUTE_GAP, destinationId, MAX_LENGTH_DESTINATION_ARRAY, descriptionLength, offerId, mockPrice, OFFER_TITLES, DESCRIPTIONS_VARIANTS, DESTINATION_NAMES, mockOfferPrice, TYPES, MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS, FilterType, Mode, SortType, BLANC_POINT, UserAction, UpdateType };
+const NoPointsTextType = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.PAST]: 'There are no past events now',
+};
+
+export { POINTS_AMOUNT, MAX_MINUTE_GAP, destinationId, MAX_LENGTH_DESTINATION_ARRAY, descriptionLength, offerId, mockPrice, OFFER_TITLES, DESCRIPTIONS_VARIANTS, DESTINATION_NAMES, mockOfferPrice, TYPES, MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS, FilterType, Mode, SortType, BLANC_POINT, UserAction, UpdateType, NoPointsTextType };

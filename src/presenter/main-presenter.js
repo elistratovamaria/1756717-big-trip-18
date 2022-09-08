@@ -5,7 +5,7 @@ import NoPointView from '../view/no-point-view.js';
 import { render, remove } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import { sortByDefault, sortByPrice, sortByTime } from '../utils/point.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { filter } from '../utils/filter.js';
 
 export default class MainPresenter {
@@ -18,10 +18,11 @@ export default class MainPresenter {
 
   #mainComponent = new MainView();
   #tripListComponent = new TripListView();
-  #noPointComponent = new NoPointView();
+  #noPointComponent = null;
 
   #pointPresenter = new Map();
   #currentSortType = SortType.DEFAULT;
+  #filterType = FilterType.EVERYTHING;
 
   constructor(mainContainer, pointsModel, destinationsModel, offersModel, filterModel) {
     this.#mainContainer = mainContainer;
@@ -35,9 +36,9 @@ export default class MainPresenter {
   }
 
   get points() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    const filteredPoints = filter[filterType](points);
+    const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
       case SortType.TIME:
@@ -106,6 +107,7 @@ export default class MainPresenter {
   };
 
   #renderNoPoints = () => {
+    this.#noPointComponent = new NoPointView(this.#filterType);
     render(this.#noPointComponent, this.#mainComponent.element);
   };
 
@@ -131,7 +133,10 @@ export default class MainPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noPointComponent);
+
+    if (this.#noPointComponent) {
+      remove(this.#noPointComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortType.DEFAULT;
