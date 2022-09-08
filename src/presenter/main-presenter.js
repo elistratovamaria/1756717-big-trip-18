@@ -6,12 +6,14 @@ import { render, remove } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import { sortByDefault, sortByPrice, sortByTime } from '../utils/point.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
+import { filter } from '../utils/filter.js';
 
 export default class MainPresenter {
   #mainContainer = null;
   #pointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
+  #filterModel = null;
   #sortComponent = null;
 
   #mainComponent = new MainView();
@@ -21,22 +23,29 @@ export default class MainPresenter {
   #pointPresenter = new Map();
   #currentSortType = SortType.DEFAULT;
 
-  constructor(mainContainer, pointsModel, destinationsModel, offersModel) {
+  constructor(mainContainer, pointsModel, destinationsModel, offersModel, filterModel) {
     this.#mainContainer = mainContainer;
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#filterModel = filterModel;
+
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    const filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[filterType](points);
+
     switch (this.#currentSortType) {
       case SortType.TIME:
-        return [...this.#pointsModel.points].sort(sortByTime);
+        return filteredPoints.sort(sortByTime);
       case SortType.PRICE:
-        return [...this.#pointsModel.points].sort(sortByPrice);
+        return filteredPoints.sort(sortByPrice);
       default:
-        return [...this.#pointsModel.points].sort(sortByDefault);
+        return filteredPoints.sort(sortByDefault);
     }
   }
 
