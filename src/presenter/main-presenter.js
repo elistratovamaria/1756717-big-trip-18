@@ -4,6 +4,7 @@ import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
 import { render, remove } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
+import PointNewPresenter from './point-new-presenter.js';
 import { sortByDefault, sortByPrice, sortByTime } from '../utils/point.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { filter } from '../utils/filter.js';
@@ -21,6 +22,7 @@ export default class MainPresenter {
   #noPointComponent = null;
 
   #pointPresenter = new Map();
+  #pointNewPresenter = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
 
@@ -30,6 +32,8 @@ export default class MainPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
+
+    this.#pointNewPresenter = new PointNewPresenter(this.#tripListComponent.element, this.#handleViewAction);
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -62,6 +66,12 @@ export default class MainPresenter {
     this.#renderMain();
   };
 
+  createPoint = (callback) => {
+    this.#currentSortType = SortType.DEFAULT;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#pointNewPresenter.init(callback, this.offers, this.destinations);
+  };
+
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
@@ -86,7 +96,7 @@ export default class MainPresenter {
         this.#renderMain();
         break;
       case UpdateType.MAJOR:
-        this.#clearMain({resetSortType: true});
+        this.#clearMain({ resetSortType: true });
         this.#renderMain();
         break;
     }
@@ -103,6 +113,7 @@ export default class MainPresenter {
   };
 
   #handleModeChange = () => {
+    this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
 
@@ -128,7 +139,8 @@ export default class MainPresenter {
     points.forEach((point) => this.#renderPoint(point));
   };
 
-  #clearMain = ({resetSortType = false} = {}) => {
+  #clearMain = ({ resetSortType = false } = {}) => {
+    this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
 
