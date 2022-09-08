@@ -4,7 +4,7 @@ import PointEditView from '../view/point-edit-view.js';
 import { isEscapeKey } from '../utils/common.js';
 import { isDatesEqual, isPriceEqual, isDurationEqual } from '../utils/point.js';
 import { Mode } from '../const.js';
-import { UserAction, UpdateType } from '../const.js';
+import { UserAction, UpdateType} from '../const.js';
 
 export default class PointPresenter {
   #tripListContainer = null;
@@ -37,8 +37,8 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new PointView(point, this.#offers, this.#destinations);
-    this.#pointEditComponent = new PointEditView(point, this.#offers, this.#destinations);
+    this.#pointComponent = new PointView(this.#point, this.#offers, this.#destinations);
+    this.#pointEditComponent = new PointEditView(this.#point, this.#offers, this.#destinations);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
@@ -122,7 +122,7 @@ export default class PointPresenter {
     this.#changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
-      { ...this.#point, isFavorite: !this.#point.isFavorite },
+      {...this.#point, isFavorite: !this.#point.isFavorite},
     );
   };
 

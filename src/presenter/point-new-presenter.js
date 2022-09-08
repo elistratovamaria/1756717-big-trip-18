@@ -9,25 +9,28 @@ export default class PointNewPresenter {
   #changeData = null;
   #pointEditComponent = null;
   #destroyCallback = null;
-  #offers = null;
-  #destinations = null;
+  #offersModel = null;
+  #destinationsModel = null;
 
-  constructor(tripListContainer, changeData) {
+  constructor(tripListContainer, changeData, offersModel, destinationsModel) {
     this.#tripListContainer = tripListContainer;
     this.#changeData = changeData;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
   }
 
-  init = (callback, offers, destinations) => {
+  init = (callback) => {
     this.#destroyCallback = callback;
-    this.#offers = offers;
-    this.#destinations = destinations;
+    const offers = this.#offersModel.offers;
+    const destinations = this.#destinationsModel.destinations;
 
     if (this.#pointEditComponent !== null) {
       return;
     }
 
-    this.#pointEditComponent = new PointEditView(undefined, this.#offers, this.#destinations);
+    this.#pointEditComponent = new PointEditView(undefined, offers, destinations);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#pointEditComponent.setClickHandler(this.#handleClick);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     render(this.#pointEditComponent, this.#tripListContainer);
@@ -60,6 +63,11 @@ export default class PointNewPresenter {
   #handleDeleteClick = () => {
     this.destroy();
   };
+
+  #handleClick = () => {
+    this.destroy();
+  };
+
 
   #escKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {

@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { humanizePointEditDate, isSubmitDisabled } from '../utils/point.js';
+import { humanizePointEditDate, isSubmitDisabledDate } from '../utils/point.js';
 import { TYPES, OFFERS_OPTIONS, BLANC_POINT, DESTINATION_NAMES } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -134,7 +134,7 @@ const createPointEditTemplate = (point) => {
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled(dateTo, dateFrom) ? 'disabled' : ''}>Save</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabledDate(dateTo, dateFrom) ? 'disabled' : ''}>Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -181,13 +181,13 @@ export default class PointEditView extends AbstractStatefulView {
 
   #dueDateFromChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateFrom: userDate,
+      dateFrom: userDate?.toISOString(),
     });
   };
 
   #dueDateToChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateTo: userDate,
+      dateTo: userDate?.toISOString(),
     });
   };
 
@@ -278,11 +278,14 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #setDateFrompicker = () => {
+    const {dateFrom} = this._state;
+    const startDate = dateFrom && new Date(dateFrom);
+
     this.#datepicker = flatpickr(
       this.element.querySelector('[name = "event-start-time"]'),
       {
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._state.dateFrom,
+        defaultDate: startDate,
         onChange: this.#dueDateFromChangeHandler,
         enableTime: true,
         'time_24hr': true,
@@ -291,11 +294,14 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #setDateTopicker = () => {
+    const {dateTo} = this._state;
+    const startDate = dateTo && new Date(dateTo);
+
     this.#datepicker = flatpickr(
       this.element.querySelector('[name = "event-end-time"]'),
       {
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._state.dateTo,
+        defaultDate: startDate,
         onChange: this.#dueDateToChangeHandler,
         enableTime: true,
         'time_24hr': true,
