@@ -102,13 +102,13 @@ const SortType = {
 };
 
 const BLANC_POINT = {
-  basePrice: null,
-  dateFrom: null,
-  dateTo: null,
-  destination: null,
+  basePrice: 0,
+  dateFrom: '2022-09-10T22:55:56.845Z',
+  dateTo: '2022-09-10T22:55:56.845Z',
+  destination: 1,
   isFavorite: false,
   offers: [],
-  type: null,
+  type: 'bus',
 };
 
 const UserAction = {

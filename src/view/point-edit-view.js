@@ -181,13 +181,13 @@ export default class PointEditView extends AbstractStatefulView {
 
   #dueDateFromChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateFrom: userDate?.toISOString(),
+      dateFrom: userDate,
     });
   };
 
   #dueDateToChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateTo: userDate?.toISOString(),
+      dateTo: userDate,
     });
   };
 
@@ -264,6 +264,7 @@ export default class PointEditView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       checkedDestination: this.#destinations.find((elem) => elem.name === evt.target.value),
+      destination: this.#destinations.find((elem) => elem.name === evt.target.value).id,
     });
   };
 
@@ -278,14 +279,11 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #setDateFrompicker = () => {
-    const {dateFrom} = this._state;
-    const startDate = dateFrom && new Date(dateFrom);
-
     this.#datepicker = flatpickr(
       this.element.querySelector('[name = "event-start-time"]'),
       {
         dateFormat: 'd/m/y H:i',
-        defaultDate: startDate,
+        defaultDate: this._state.dateFrom,
         onChange: this.#dueDateFromChangeHandler,
         enableTime: true,
         'time_24hr': true,
@@ -294,14 +292,11 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #setDateTopicker = () => {
-    const {dateTo} = this._state;
-    const startDate = dateTo && new Date(dateTo);
-
     this.#datepicker = flatpickr(
       this.element.querySelector('[name = "event-end-time"]'),
       {
         dateFormat: 'd/m/y H:i',
-        defaultDate: startDate,
+        defaultDate: this._state.dateTo,
         onChange: this.#dueDateToChangeHandler,
         enableTime: true,
         'time_24hr': true,

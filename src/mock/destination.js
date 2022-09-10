@@ -15,7 +15,11 @@ const generateDestination = (i) => ({
   name: DESTINATION_NAMES[getRandomInteger(0, DESTINATION_NAMES.length - 1)],
   pictures: [
     {
-      src: `http://picsum.photos/248/152?r=${Math.random()}`,
+      src: 'https://via.placeholder.com/152' /*`http://picsum.photos/248/152?r=${Math.random()}`*/,
+      description: generateDescription(),
+    },
+    {
+      src: 'https://via.placeholder.com/152' /*`http://picsum.photos/248/152?r=${Math.random()}`*/,
       description: generateDescription(),
     }
   ],
