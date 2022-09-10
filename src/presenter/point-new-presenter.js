@@ -59,14 +59,12 @@ export default class PointNewPresenter {
   };
 
   #handleDeleteClick = () => {
-    console.log('here');
     this.destroy();
   };
 
   #handleClick = () => {
     this.destroy();
   };
-
 
   #escKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {

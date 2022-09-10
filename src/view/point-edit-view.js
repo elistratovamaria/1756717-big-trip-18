@@ -208,6 +208,11 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
   };
 
+  setFormReset = (callback) => {
+    this._callback.reset = callback;
+    this.element.querySelector('.event--edit').addEventListener('reset', this.#resetHandler);
+  };
+
   setDeleteClickHandler = (callback) => {
     this._callback.deleteClick = callback;
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
@@ -215,7 +220,9 @@ export default class PointEditView extends AbstractStatefulView {
 
   _restoreHandlers = () => {
     this.#setInnerHandlers();
+    this.setFormReset(this._callback.reset);
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.#setDatepicker();
   };
 
@@ -297,6 +304,11 @@ export default class PointEditView extends AbstractStatefulView {
     this._callback.deleteClick(PointEditView.parseStateToPoint(this._state));
   };
 
+  #resetHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.reset();
+  };
+
   #setDatepicker = () => {
     this.#startDatepicker = flatpickr(
       this.element.querySelector('[name = "event-start-time"]'),
@@ -356,7 +368,6 @@ export default class PointEditView extends AbstractStatefulView {
   static parseStateToPoint = (state) => {
     const point = { ...state };
 
-    console.log(point);
     delete point.checkedDestination;
     delete point.offersByType;
     delete point.checkedOffers;
