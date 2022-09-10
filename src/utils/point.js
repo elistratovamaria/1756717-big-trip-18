@@ -66,4 +66,6 @@ const isDurationEqual = (pointA, pointB) => {
   return durationPointA === durationPointB;
 };
 
-export { humanizePointEditDate, humanizePointEventDate, humanizePointRouteTime, humanizeRouteDuration, isPointInFuture, isPointInPast, sortByPrice, sortByTime, sortByDefault, isSubmitDisabledDate, isDatesEqual, isPriceEqual, isDurationEqual };
+const isPriceValid = (basePrice) => Number(basePrice) > 0 && Number.isInteger(Number(basePrice));
+
+export { humanizePointEditDate, humanizePointEventDate, humanizePointRouteTime, humanizeRouteDuration, isPointInFuture, isPointInPast, sortByPrice, sortByTime, sortByDefault, isSubmitDisabledDate, isDatesEqual, isPriceEqual, isDurationEqual, isPriceValid };

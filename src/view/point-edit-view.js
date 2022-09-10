@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { humanizePointEditDate, isSubmitDisabledDate } from '../utils/point.js';
+import { humanizePointEditDate, isSubmitDisabledDate, isPriceValid } from '../utils/point.js';
 import { TYPES, OFFERS_OPTIONS, BLANC_POINT, DESTINATION_NAMES } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -245,6 +245,12 @@ export default class PointEditView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     evt.preventDefault();
+    if (!isPriceValid(evt.target.value)) {
+      this.element.querySelector('.event__input--price').setCustomValidity('Price should be positive integer number');
+    } else {
+      this.element.querySelector('.event__input--price').setCustomValidity('');
+    }
+    this.element.querySelector('.event__input--price').reportValidity();
     this._setState({
       basePrice: evt.target.value,
     });
