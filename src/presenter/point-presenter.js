@@ -115,7 +115,7 @@ export default class PointPresenter {
   };
 
   #handleClick = () => {
-    this.#replaceFormToPoint();
+    this.resetView();
   };
 
   #handleFavoriteClick = () => {

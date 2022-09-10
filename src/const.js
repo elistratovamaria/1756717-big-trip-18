@@ -102,7 +102,7 @@ const SortType = {
 };
 
 const BLANC_POINT = {
-  basePrice: 0,
+  basePrice: 1,
   dateFrom: '2022-09-10T22:55:56.845Z',
   dateTo: '2022-09-10T22:55:56.845Z',
   destination: 1,

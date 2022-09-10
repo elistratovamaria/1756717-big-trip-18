@@ -1,4 +1,4 @@
-import { remove, render } from '../framework/render.js';
+import { remove, render, RenderPosition } from '../framework/render.js';
 import PointEditView from '../view/point-edit-view.js';
 import { nanoid } from 'nanoid';
 import { UserAction, UpdateType } from '../const.js';
@@ -33,7 +33,7 @@ export default class PointNewPresenter {
     this.#pointEditComponent.setClickHandler(this.#handleClick);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
-    render(this.#pointEditComponent, this.#tripListContainer);
+    render(this.#pointEditComponent, this.#tripListContainer, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
@@ -42,9 +42,7 @@ export default class PointNewPresenter {
     if (this.#pointEditComponent === null) {
       return;
     }
-
     this.#destroyCallback?.();
-
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
 
@@ -61,6 +59,7 @@ export default class PointNewPresenter {
   };
 
   #handleDeleteClick = () => {
+    console.log('here');
     this.destroy();
   };
 
