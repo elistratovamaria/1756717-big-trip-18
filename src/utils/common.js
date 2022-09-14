@@ -1,20 +1,23 @@
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-const shuffle = (arr) => {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-};
-
-const getArrayRandomLength = (arr) => shuffle(arr).slice(getRandomInteger(0, arr.length - 1));
-
 const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-export { getRandomInteger, getArrayRandomLength, isEscapeKey};
+const ERROR_SHOW_TIME = 5000;
+
+const showErrorLoadMessage = (message) => {
+  const errorContainer = document.createElement('div');
+  errorContainer.style.zIndex = '100';
+  errorContainer.style.position = 'absolute';
+  errorContainer.style.left = '0';
+  errorContainer.style.top = '0';
+  errorContainer.style.right = '0';
+  errorContainer.style.padding = '15px 10px';
+  errorContainer.style.fontSize = '40px';
+  errorContainer.style.textAlign = 'center';
+  errorContainer.style.backgroundColor = 'tomato';
+  errorContainer.textContent = message;
+  document.body.append(errorContainer);
+  setTimeout(() => {
+    errorContainer.remove();
+  }, ERROR_SHOW_TIME);
+};
+
+export { isEscapeKey, showErrorLoadMessage};

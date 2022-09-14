@@ -1,10 +1,29 @@
 import Observable from '../framework/observable.js';
-import { resultOffers } from '../mock/offers.js';
+import { UpdateType } from '../const.js';
+import { showErrorLoadMessage } from '../utils/common.js';
 
 export default class OffersModel extends Observable{
-  #offers = resultOffers;
+  #offersApiService = null;
+  #offers = [];
+
+  constructor(offersApiService) {
+    super();
+    this.#offersApiService = offersApiService;
+  }
 
   get offers() {
     return this.#offers;
   }
+
+  init = async () => {
+    try {
+      const offers = await this.#offersApiService.offers;
+      this.#offers = Object.assign.apply({}, offers.map( (v) => ( {[v.type]: v.offers} ) ) );
+    } catch(err) {
+      showErrorLoadMessage('Can\'t receive data');
+      this.#offers = [];
+    }
+
+    this._notify(UpdateType.INIT);
+  };
 }

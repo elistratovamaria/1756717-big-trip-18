@@ -6,14 +6,18 @@ import OffersModel from './model/offers-model.js';
 import FilterModel from './model/filter-model.js';
 import NewPointButtonView from './view/new-point-button-view.js';
 import { render } from './framework/render.js';
+import PointsApiService from './api/points-api-service.js';
+import DestinationsApiService from './api/destinations-api-service.js';
+import OffersApiService from './api/offers-api-service.js';
+import { AUTHORIZATION, END_POINT } from './const.js';
 
 const tripControlElement = document.querySelector('.trip-main__trip-controls');
 const tripEventsElement = document.querySelector('.trip-events');
 const tripMainElement = document.querySelector('.trip-main');
 
-const pointsModel = new PointsModel();
-const destinationsModel = new DestinationsModel();
-const offersModel = new OffersModel();
+const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATION));
+const destinationsModel = new DestinationsModel(new DestinationsApiService(END_POINT, AUTHORIZATION));
+const offersModel = new OffersModel(new OffersApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 const mainPresenter = new MainPresenter(tripEventsElement, pointsModel, destinationsModel, offersModel, filterModel);
 const filterPresenter = new FilterPresenter(tripControlElement, filterModel, pointsModel);
@@ -28,8 +32,12 @@ const handleNewPointButtonClick = () => {
   newPointButtonComponent.element.disabled = true;
 };
 
-render(newPointButtonComponent, tripMainElement);
-newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
-
 filterPresenter.init();
 mainPresenter.init();
+pointsModel.init()
+  .finally(() => {
+    render(newPointButtonComponent, tripMainElement);
+    newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
+  });
+destinationsModel.init();
+offersModel.init();

@@ -1,15 +1,17 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointEditDate, isSubmitDisabledDate, isPriceValid } from '../utils/point.js';
-import { TYPES, OFFERS_OPTIONS, BLANC_POINT, DESTINATION_NAMES } from '../const.js';
+import { OFFERS_OPTIONS, BLANC_POINT } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createPointEditTemplate = (point) => {
+const createPointEditTemplate = (point, destinations, offers) => {
   const { id, dateFrom, dateTo, type, basePrice, offersByType, checkedOffers, checkedDestination } = point;
+  const namesDestinations = destinations.map((elem) => elem.name);
+  const offersType = Object.keys(offers);
 
   const makeTypeToUpperCase = (typeToChange) => typeToChange[0].toUpperCase() + typeToChange.slice(1);
 
-  const createEditTypeTemplate = (currentType) => TYPES.map((typeToShow) => `<div
+  const createEditTypeTemplate = (currentType) => offersType.map((typeToShow) => `<div
   class="event__type-item">
   <input id="event-type-${typeToShow}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeToShow}" ${currentType === typeToShow ? 'checked' : ''}>
   <label class="event__type-label  event__type-label--${typeToShow}" for="event-type-${typeToShow}-1">${makeTypeToUpperCase(typeToShow)}</label>
@@ -85,7 +87,7 @@ const createPointEditTemplate = (point) => {
 
   const isSelectedDestinationName = (name) => checkedDestination.name === name ? 'selected' : '';
 
-  const createDestinationOptionTemplate = () => DESTINATION_NAMES
+  const createDestinationOptionTemplate = () => namesDestinations
     .map((name) => `<option value="${name}" ${isSelectedDestinationName(name)}></option>`)
     .join('');
 
@@ -168,7 +170,7 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
   get template() {
-    return createPointEditTemplate(this._state);
+    return createPointEditTemplate(this._state, this.#destinations, this.#offers);
   }
 
   removeElement = () => {

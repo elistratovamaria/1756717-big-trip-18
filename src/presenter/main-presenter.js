@@ -2,7 +2,8 @@ import MainView from '../view/main-view.js';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
-import { render, remove } from '../framework/render.js';
+import LoadingView from '../view/loading-view.js';
+import { render, remove, RenderPosition } from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
 import PointNewPresenter from './point-new-presenter.js';
 import { sortByDefault, sortByPrice, sortByTime } from '../utils/point.js';
@@ -19,12 +20,14 @@ export default class MainPresenter {
 
   #mainComponent = new MainView();
   #tripListComponent = new TripListView();
+  #loadingComponent = new LoadingView();
   #noPointComponent = null;
 
   #pointPresenter = new Map();
   #pointNewPresenter = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor(mainContainer, pointsModel, destinationsModel, offersModel, filterModel) {
     this.#mainContainer = mainContainer;
@@ -99,6 +102,11 @@ export default class MainPresenter {
         this.#clearMain({ resetSortType: true });
         this.#renderMain();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderMain();
+        break;
     }
   };
 
@@ -117,6 +125,10 @@ export default class MainPresenter {
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#mainComponent.element, RenderPosition.AFTERBEGIN);
+  };
+
   #renderNoPoints = () => {
     this.#noPointComponent = new NoPointView(this.#filterType);
     render(this.#noPointComponent, this.#mainComponent.element);
@@ -130,7 +142,6 @@ export default class MainPresenter {
 
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#tripListComponent.element, this.#handleViewAction, this.#handleModeChange);
-
     pointPresenter.init(point, this.offers, this.destinations);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
@@ -145,6 +156,7 @@ export default class MainPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointComponent) {
       remove(this.#noPointComponent);
@@ -156,9 +168,15 @@ export default class MainPresenter {
   };
 
   #renderMain = () => {
+    render(this.#mainComponent, this.#mainContainer);
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const points = this.points;
     const pointCount = points.length;
-    render(this.#mainComponent, this.#mainContainer);
 
     if (pointCount === 0) {
       this.#renderNoPoints();
