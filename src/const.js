@@ -29,7 +29,7 @@ const SortType = {
 };
 
 const BLANC_POINT = {
-  basePrice: 1,
+  basePrice: 0,
   dateFrom: new Date(),
   dateTo: new Date(),
   destination: 1,

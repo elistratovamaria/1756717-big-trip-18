@@ -12,27 +12,37 @@ const createPointTemplate = (point, offersData, destinationData) => {
 
   const makeTypeToUpperCase = () => type[0].toUpperCase() + type.slice(1);
 
-  const name = destinationData.find((dest) => (dest.id === destination)).name;
+  const getName = () => {
+    if (destinationData.length > 0) {
+      return destinationData.find((dest) => (dest.id === destination)).name;
+    } else {
+      return '';
+    }
+  };
 
   const favoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
 
   const createOffersTemplate = () => {
-    const offersToAd = [];
-    const offersByType = offersData[type];
-    for (const offer of offersByType) {
-      if (offers.includes(offer.id)) {
-        offersToAd.push(offer);
+    if (Object.keys(offersData).length > 0) {
+      const offersToAd = [];
+      const offersByType = offersData[type];
+      for (const offer of offersByType) {
+        if (offers.includes(offer.id)) {
+          offersToAd.push(offer);
+        }
       }
-    }
-    return offersToAd
-      .map((offer) =>
-        `<li class="event__offer">
+      return offersToAd
+        .map((offer) =>
+          `<li class="event__offer">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price}</span>
           </li>`
-      )
-      .join('');
+        )
+        .join('');
+    } else {
+      return '';
+    }
   };
 
   return (
@@ -42,7 +52,7 @@ const createPointTemplate = (point, offersData, destinationData) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${makeTypeToUpperCase()} ${name}</h3>
+      <h3 class="event__title">${makeTypeToUpperCase()} ${getName()}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${dateFrom}">${humanDateFrom}</time>

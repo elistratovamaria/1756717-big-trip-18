@@ -43,19 +43,23 @@ const createPointEditTemplate = (point, destinations, offers) => {
       </div>`).join('');
 
   const createEditOffersWrapperTemplate = () => {
-    if (offersByType) {
+    if (offersByType.length > 0) {
       return (` <section class="event__section  event__section--offers">
                   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                   <div class="event__available-offers">
                     ${createEditOffersTemplate()}
                   </div>
                 </section>`);
+    } else {
+      return ('');
     }
   };
 
   const createDestinationDescriptionTemplate = () => {
-    if (checkedDestination.description) {
+    if (checkedDestination.description !== '') {
       return (`<p class="event__destination-description">${checkedDestination.description}</p>`);
+    } else {
+      return '';
     }
   };
 
@@ -64,7 +68,7 @@ const createPointEditTemplate = (point, destinations, offers) => {
     .join('');
 
   const createDestinationPicturesTemplate = () => {
-    if (checkedDestination.pictures) {
+    if (checkedDestination.pictures.length > 0) {
       return (
         `<div class="event__photos-container">
             <div class="event__photos-tape">
@@ -72,16 +76,20 @@ const createPointEditTemplate = (point, destinations, offers) => {
             </div>
           </div>`
       );
+    } else {
+      return '';
     }
   };
 
   const createEditDestinationTemplate = () => {
-    if (checkedDestination.description || checkedDestination.pictures) {
+    if (checkedDestination.description !== '' || checkedDestination.pictures.length > 0) {
       return (`<section class="event__section  event__section--destination">
                 <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                 ${createDestinationDescriptionTemplate()}
                 ${createDestinationPicturesTemplate()}
               </section>`);
+    } else {
+      return '';
     }
   };
 
@@ -360,12 +368,37 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   };
 
-  static parsePointToState = (point, offers, destinations) => ({
-    ...point,
-    offersByType: offers[point.type],
-    checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
-    checkedOffers: offers[point.type].filter((offer) => point.offers.includes(offer.id)),
-  });
+  static parsePointToState = (point, offers, destinations) => {
+    if (Object.keys(offers).length === 0 && destinations.length === 0) {
+      return ({
+        ...point,
+        offersByType: [],
+        checkedDestination: { name: '', description: '', pictures: [] },
+        checkedOffers: [],
+      });
+    } else if (destinations.length === 0) {
+      return ({
+        ...point,
+        offersByType: offers[point.type],
+        checkedDestination: { name: '', description: '', pictures: [] },
+        checkedOffers: offers[point.type].filter((offer) => point.offers.includes(offer.id)),
+      });
+    } else if (Object.keys(offers).length === 0) {
+      return ({
+        ...point,
+        offersByType: [],
+        checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
+        checkedOffers: [],
+      });
+    } else {
+      return ({
+        ...point,
+        offersByType: offers[point.type],
+        checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
+        checkedOffers: offers[point.type].filter((offer) => point.offers.includes(offer.id)),
+      });
+    }
+  };
 
   static parseStateToPoint = (state) => {
     const point = { ...state };

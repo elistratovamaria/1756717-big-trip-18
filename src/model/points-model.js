@@ -20,9 +20,9 @@ export default class PointsModel extends Observable {
       this.#points = points.map(this.#adaptToClient);
     } catch(err) {
       this.#points = [];
+    } finally {
+      this._notify(UpdateType.INIT);
     }
-
-    this._notify(UpdateType.INIT);
   };
 
   updatePoint = async (updateType, update) => {

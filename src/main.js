@@ -32,12 +32,14 @@ const handleNewPointButtonClick = () => {
   newPointButtonComponent.element.disabled = true;
 };
 
-filterPresenter.init();
-mainPresenter.init();
+destinationsModel.init();
+offersModel.init();
 pointsModel.init()
   .finally(() => {
     render(newPointButtonComponent, tripMainElement);
     newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
   });
-destinationsModel.init();
-offersModel.init();
+
+filterPresenter.init();
+
+

@@ -40,6 +40,8 @@ export default class MainPresenter {
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#destinationsModel.addObserver(this.#handleModelEvent);
+    this.#offersModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -168,6 +170,9 @@ export default class MainPresenter {
   };
 
   #renderMain = () => {
+    if (this.#mainComponent instanceof MainView) {
+      remove(this.#mainComponent);
+    }
     render(this.#mainComponent, this.#mainContainer);
 
     if (this.#isLoading) {
@@ -184,6 +189,9 @@ export default class MainPresenter {
     }
 
     this.#renderSort();
+    if (this.#tripListComponent instanceof TripListView) {
+      remove(this.#tripListComponent);
+    }
     render(this.#tripListComponent, this.#mainComponent.element);
     this.#renderPoints(points);
   };

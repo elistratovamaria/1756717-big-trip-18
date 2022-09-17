@@ -22,8 +22,8 @@ export default class DestinationsModel extends Observable{
     } catch(err) {
       showErrorLoadMessage('Can\'t receive data');
       this.#destinations = [];
+    } finally {
+      this._notify(UpdateType.INIT);
     }
-
-    this._notify(UpdateType.INIT);
   };
 }
