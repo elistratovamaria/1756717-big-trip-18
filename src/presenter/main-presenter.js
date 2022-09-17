@@ -27,7 +27,9 @@ export default class MainPresenter {
   #pointNewPresenter = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
-  #isLoading = true;
+  #isLoadingPoints = true;
+  #isLoadingOffers = true;
+  #isLoadingDestinations = true;
 
   constructor(mainContainer, pointsModel, destinationsModel, offersModel, filterModel) {
     this.#mainContainer = mainContainer;
@@ -36,7 +38,7 @@ export default class MainPresenter {
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
 
-    this.#pointNewPresenter = new PointNewPresenter(this.#tripListComponent.element, this.#handleViewAction, this.#offersModel, this.#destinationsModel);
+    this.#pointNewPresenter = new PointNewPresenter(this.#tripListComponent, this.#handleViewAction, this.#offersModel, this.#destinationsModel);
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -104,8 +106,18 @@ export default class MainPresenter {
         this.#clearMain({ resetSortType: true });
         this.#renderMain();
         break;
-      case UpdateType.INIT:
-        this.#isLoading = false;
+      case UpdateType.INIT_POINTS:
+        this.#isLoadingPoints = false;
+        remove(this.#loadingComponent);
+        this.#renderMain();
+        break;
+      case UpdateType.INIT_OFFERS:
+        this.#isLoadingOffers = false;
+        remove(this.#loadingComponent);
+        this.#renderMain();
+        break;
+      case UpdateType.INIT_DESTINATIONS:
+        this.#isLoadingDestinations = false;
         remove(this.#loadingComponent);
         this.#renderMain();
         break;
@@ -175,7 +187,7 @@ export default class MainPresenter {
     }
     render(this.#mainComponent, this.#mainContainer);
 
-    if (this.#isLoading) {
+    if (this.#isLoadingPoints || this.#isLoadingOffers || this.#isLoadingDestinations) {
       this.#renderLoading();
       return;
     }

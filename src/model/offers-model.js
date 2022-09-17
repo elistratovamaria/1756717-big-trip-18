@@ -23,7 +23,7 @@ export default class OffersModel extends Observable{
       showErrorLoadMessage('Can\'t receive data');
       this.#offers = [];
     } finally {
-      this._notify(UpdateType.INIT);
+      this._notify(UpdateType.INIT_OFFERS);
     }
   };
 }

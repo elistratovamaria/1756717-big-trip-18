@@ -41,5 +41,6 @@ pointsModel.init()
   });
 
 filterPresenter.init();
+mainPresenter.init();
 
 
