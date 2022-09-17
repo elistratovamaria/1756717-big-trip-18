@@ -1,15 +1,17 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointEditDate, isSubmitDisabledDate, isPriceValid } from '../utils/point.js';
-import { TYPES, OFFERS_OPTIONS, BLANC_POINT, DESTINATION_NAMES } from '../const.js';
+import { OFFERS_OPTIONS, BLANC_POINT } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createPointEditTemplate = (point) => {
+const createPointEditTemplate = (point, destinations, offers) => {
   const { id, dateFrom, dateTo, type, basePrice, offersByType, checkedOffers, checkedDestination } = point;
+  const namesDestinations = destinations.map((elem) => elem.name);
+  const offersType = Object.keys(offers);
 
   const makeTypeToUpperCase = (typeToChange) => typeToChange[0].toUpperCase() + typeToChange.slice(1);
 
-  const createEditTypeTemplate = (currentType) => TYPES.map((typeToShow) => `<div
+  const createEditTypeTemplate = (currentType) => offersType.map((typeToShow) => `<div
   class="event__type-item">
   <input id="event-type-${typeToShow}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeToShow}" ${currentType === typeToShow ? 'checked' : ''}>
   <label class="event__type-label  event__type-label--${typeToShow}" for="event-type-${typeToShow}-1">${makeTypeToUpperCase(typeToShow)}</label>
@@ -41,19 +43,23 @@ const createPointEditTemplate = (point) => {
       </div>`).join('');
 
   const createEditOffersWrapperTemplate = () => {
-    if (offersByType) {
+    if (offersByType.length > 0) {
       return (` <section class="event__section  event__section--offers">
                   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
                   <div class="event__available-offers">
                     ${createEditOffersTemplate()}
                   </div>
                 </section>`);
+    } else {
+      return ('');
     }
   };
 
   const createDestinationDescriptionTemplate = () => {
-    if (checkedDestination.description) {
+    if (checkedDestination.description !== '') {
       return (`<p class="event__destination-description">${checkedDestination.description}</p>`);
+    } else {
+      return '';
     }
   };
 
@@ -62,7 +68,7 @@ const createPointEditTemplate = (point) => {
     .join('');
 
   const createDestinationPicturesTemplate = () => {
-    if (checkedDestination.pictures) {
+    if (checkedDestination.pictures.length > 0) {
       return (
         `<div class="event__photos-container">
             <div class="event__photos-tape">
@@ -70,22 +76,26 @@ const createPointEditTemplate = (point) => {
             </div>
           </div>`
       );
+    } else {
+      return '';
     }
   };
 
   const createEditDestinationTemplate = () => {
-    if (checkedDestination.description || checkedDestination.pictures) {
+    if (checkedDestination.description !== '' || checkedDestination.pictures.length > 0) {
       return (`<section class="event__section  event__section--destination">
                 <h3 class="event__section-title  event__section-title--destination">Destination</h3>
                 ${createDestinationDescriptionTemplate()}
                 ${createDestinationPicturesTemplate()}
               </section>`);
+    } else {
+      return '';
     }
   };
 
   const isSelectedDestinationName = (name) => checkedDestination.name === name ? 'selected' : '';
 
-  const createDestinationOptionTemplate = () => DESTINATION_NAMES
+  const createDestinationOptionTemplate = () => namesDestinations
     .map((name) => `<option value="${name}" ${isSelectedDestinationName(name)}></option>`)
     .join('');
 
@@ -168,7 +178,7 @@ export default class PointEditView extends AbstractStatefulView {
   }
 
   get template() {
-    return createPointEditTemplate(this._state);
+    return createPointEditTemplate(this._state, this.#destinations, this.#offers);
   }
 
   removeElement = () => {
@@ -358,12 +368,37 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   };
 
-  static parsePointToState = (point, offers, destinations) => ({
-    ...point,
-    offersByType: offers[point.type],
-    checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
-    checkedOffers: offers[point.type].filter((offer) => point.offers.includes(offer.id)),
-  });
+  static parsePointToState = (point, offers, destinations) => {
+    if (Object.keys(offers).length === 0 && destinations.length === 0) {
+      return ({
+        ...point,
+        offersByType: [],
+        checkedDestination: { name: '', description: '', pictures: [] },
+        checkedOffers: [],
+      });
+    } else if (destinations.length === 0) {
+      return ({
+        ...point,
+        offersByType: offers[point.type],
+        checkedDestination: { name: '', description: '', pictures: [] },
+        checkedOffers: offers[point.type].filter((offer) => point.offers.includes(offer.id)),
+      });
+    } else if (Object.keys(offers).length === 0) {
+      return ({
+        ...point,
+        offersByType: [],
+        checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
+        checkedOffers: [],
+      });
+    } else {
+      return ({
+        ...point,
+        offersByType: offers[point.type],
+        checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
+        checkedOffers: offers[point.type].filter((offer) => point.offers.includes(offer.id)),
+      });
+    }
+  };
 
   static parseStateToPoint = (state) => {
     const point = { ...state };
