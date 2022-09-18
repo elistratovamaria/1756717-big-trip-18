@@ -20,4 +20,4 @@ const showErrorLoadMessage = (message) => {
   }, ERROR_SHOW_TIME);
 };
 
-export { isEscapeKey, showErrorLoadMessage};
+export { isEscapeKey, showErrorLoadMessage };

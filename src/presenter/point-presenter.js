@@ -4,7 +4,7 @@ import PointEditView from '../view/point-edit-view.js';
 import { isEscapeKey } from '../utils/common.js';
 import { isDatesEqual, isPriceEqual, isDurationEqual } from '../utils/point.js';
 import { Mode } from '../const.js';
-import { UserAction, UpdateType} from '../const.js';
+import { UserAction, UpdateType } from '../const.js';
 
 export default class PointPresenter {
   #tripListContainer = null;
@@ -56,7 +56,8 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#pointEditComponent, prevPointEditComponent);
+      replace(this.#pointComponent, prevPointEditComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -75,6 +76,41 @@ export default class PointPresenter {
     }
   };
 
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
+  };
+
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
@@ -86,14 +122,6 @@ export default class PointPresenter {
     replace(this.#pointComponent, this.#pointEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;
-  };
-
-  #escKeyDownHandler = (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      this.#pointEditComponent.reset(this.#point, this.#offers, this.#destinations);
-      this.#replaceFormToPoint();
-    }
   };
 
   #handleEditClick = () => {
@@ -111,7 +139,6 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update,
     );
-    this.#replaceFormToPoint();
   };
 
   #handleClick = () => {
@@ -122,7 +149,7 @@ export default class PointPresenter {
     this.#changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
-      {...this.#point, isFavorite: !this.#point.isFavorite},
+      { ...this.#point, isFavorite: !this.#point.isFavorite },
     );
   };
 
@@ -132,5 +159,13 @@ export default class PointPresenter {
       UpdateType.MINOR,
       point,
     );
+  };
+
+  #escKeyDownHandler = (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point, this.#offers, this.#destinations);
+      this.#replaceFormToPoint();
+    }
   };
 }

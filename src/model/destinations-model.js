@@ -2,7 +2,7 @@ import Observable from '../framework/observable.js';
 import { UpdateType } from '../const.js';
 import { showErrorLoadMessage } from '../utils/common.js';
 
-export default class DestinationsModel extends Observable{
+export default class DestinationsModel extends Observable {
   #destinationsApiService = null;
   #destinations = [];
 
@@ -19,7 +19,7 @@ export default class DestinationsModel extends Observable{
     try {
       const destinations = await this.#destinationsApiService.destinations;
       this.#destinations = destinations;
-    } catch(err) {
+    } catch (err) {
       showErrorLoadMessage('Can\'t receive data');
       this.#destinations = [];
     } finally {

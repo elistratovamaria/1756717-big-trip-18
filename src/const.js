@@ -62,9 +62,17 @@ const NoPointsTextType = {
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 
 const AUTHORIZATION = 'Basic h2odbsycbep84ohd';
 const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
-export { MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS, FilterType, Mode, SortType, BLANC_POINT, UserAction, UpdateType, NoPointsTextType, Method, AUTHORIZATION, END_POINT };
+export { MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS, FilterType, Mode, SortType, BLANC_POINT, UserAction, UpdateType, NoPointsTextType, Method, AUTHORIZATION, END_POINT, TimeLimit };
