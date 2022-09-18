@@ -2,7 +2,7 @@ import Observable from '../framework/observable.js';
 import { UpdateType } from '../const.js';
 import { showErrorLoadMessage } from '../utils/common.js';
 
-export default class OffersModel extends Observable{
+export default class OffersModel extends Observable {
   #offersApiService = null;
   #offers = [];
 
@@ -18,8 +18,8 @@ export default class OffersModel extends Observable{
   init = async () => {
     try {
       const offers = await this.#offersApiService.offers;
-      this.#offers = Object.assign.apply({}, offers.map( (v) => ( {[v.type]: v.offers} ) ) );
-    } catch(err) {
+      this.#offers = Object.assign.apply({}, offers.map((v) => ({ [v.type]: v.offers })));
+    } catch (err) {
       showErrorLoadMessage('Can\'t receive data');
       this.#offers = [];
     } finally {
