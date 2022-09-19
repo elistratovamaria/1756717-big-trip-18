@@ -3,6 +3,7 @@ import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoPointView from '../view/no-point-view.js';
 import LoadingView from '../view/loading-view.js';
+import ErrorView from '../view/error-view.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import PointPresenter from './point-presenter.js';
@@ -23,6 +24,7 @@ export default class MainPresenter {
   #tripListComponent = new TripListView();
   #loadingComponent = new LoadingView();
   #noPointComponent = null;
+  #errorComponent = null;
 
   #pointPresenter = new Map();
   #pointNewPresenter = null;
@@ -79,6 +81,9 @@ export default class MainPresenter {
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#pointNewPresenter.init(callback);
+    if (this.#noPointComponent instanceof NoPointView) {
+      remove(this.#noPointComponent);
+    }
   };
 
   #renderLoading = () => {
@@ -88,6 +93,11 @@ export default class MainPresenter {
   #renderNoPoints = () => {
     this.#noPointComponent = new NoPointView(this.#filterType);
     render(this.#noPointComponent, this.#mainComponent.element);
+  };
+
+  #renderErrorMessage = () => {
+    this.#errorComponent = new ErrorView();
+    render(this.#errorComponent, this.#mainComponent.element);
   };
 
   #renderSort = () => {
@@ -136,9 +146,17 @@ export default class MainPresenter {
 
     const points = this.points;
     const pointCount = points.length;
+    const destinationsCount = this.destinations.length;
+    const offersCount = Object.keys(this.offers).length;
 
     if (pointCount === 0) {
       this.#renderNoPoints();
+      render(this.#tripListComponent, this.#mainComponent.element);
+      return;
+    }
+
+    if(destinationsCount === 0 || offersCount === 0) {
+      this.#renderErrorMessage();
       return;
     }
 
