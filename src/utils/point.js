@@ -68,4 +68,32 @@ const isDurationEqual = (pointA, pointB) => {
 
 const isPriceValid = (basePrice) => Number(basePrice) > 0 && Number.isInteger(Number(basePrice));
 
-export { humanizePointEditDate, humanizePointEventDate, humanizePointRouteTime, humanizeRouteDuration, isPointInFuture, isPointInPast, sortByPrice, sortByTime, sortByDefault, isSubmitDisabledDate, isDatesEqual, isPriceEqual, isDurationEqual, isPriceValid };
+const getFormatInfoDates = (dateA, dateB) => {
+  if (dayjs(dateA).isSame(dayjs(dateB), 'day')) {
+    return `${dayjs(dateA).format('MMM D')}`;
+  }
+
+  if (dayjs(dateA).isSame(dayjs(dateB), 'month')) {
+    return `${dayjs(dateA).format('MMM D')}&nbsp;&mdash;&nbsp;${dayjs(dateB).format('D')}`;
+  }
+
+  return `${dayjs(dateA).format('MMM D')}&nbsp;&mdash;&nbsp;${dayjs(dateB).format('MMM D')}`;
+};
+
+const getFormatRouteNames = (ids, destinations) => {
+  if (ids.length === 1) {
+    return `${destinations.find((destination) => destination.id === ids[0]).name}`;
+  }
+
+  if (ids.length === 2) {
+    return `${destinations.find((destination) => destination.id === ids[0]).name}&nbsp;&mdash;&nbsp;${destinations.find((destination) => destination.id === ids[1]).name}`;
+  }
+
+  if (ids.length === 3) {
+    return `${destinations.find((destination) => destination.id === ids[0]).name}&nbsp;&mdash;&nbsp;${destinations.find((destination) => destination.id === ids[1]).name}&nbsp;&mdash;&nbsp;${destinations.find((destination) => destination.id === ids[2]).name}`;
+  }
+
+  return `${destinations.find((destination) => destination.id === ids[0]).name}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${destinations.find((destination) => destination.id === ids[ids.length - 1]).name}`;
+};
+
+export { humanizePointEditDate, humanizePointEventDate, humanizePointRouteTime, humanizeRouteDuration, isPointInFuture, isPointInPast, sortByPrice, sortByTime, sortByDefault, isSubmitDisabledDate, isDatesEqual, isPriceEqual, isDurationEqual, isPriceValid, getFormatInfoDates, getFormatRouteNames };

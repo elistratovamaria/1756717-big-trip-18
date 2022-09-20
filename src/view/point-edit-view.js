@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointEditDate, isSubmitDisabledDate, isPriceValid } from '../utils/point.js';
-import { OFFERS_OPTIONS, BLANC_POINT } from '../const.js';
+import { BLANC_POINT } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -24,7 +24,7 @@ const createPointEditTemplate = (point, destinations, offers) => {
 
   const getOfferOption = (offer) => {
     const offerTitle = offer.title;
-    return offerTitle in OFFERS_OPTIONS ? OFFERS_OPTIONS[offerTitle] : 'default';
+    return offerTitle !== '' ? offerTitle : 'default';
   };
 
   const getCheckedOffersID = () => checkedOffers.map((offer) => offer.id);
@@ -191,6 +191,14 @@ export default class PointEditView extends AbstractStatefulView {
     return createPointEditTemplate(this._state, this.#destinations, this.#offers);
   }
 
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormResetHandler(this._callback.reset);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+    this.#setDatepicker();
+  };
+
   removeElement = () => {
     super.removeElement();
 
@@ -209,14 +217,6 @@ export default class PointEditView extends AbstractStatefulView {
     this.updateElement(
       PointEditView.parsePointToState(point, offers, destinations),
     );
-  };
-
-  _restoreHandlers = () => {
-    this.#setInnerHandlers();
-    this.setFormResetHandler(this._callback.reset);
-    this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setDeleteClickHandler(this._callback.deleteClick);
-    this.#setDatepicker();
   };
 
   #setInnerHandlers = () => {
@@ -378,49 +378,16 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   };
 
-  static parsePointToState = (point, offers, destinations) => {
-    if (Object.keys(offers).length === 0 && destinations.length === 0) {
-      return ({
-        ...point,
-        offersByType: [],
-        checkedDestination: { name: '', description: '', pictures: [] },
-        checkedOffers: [],
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      });
-    } else if (destinations.length === 0) {
-      return ({
-        ...point,
-        offersByType: offers[point.type],
-        checkedDestination: { name: '', description: '', pictures: [] },
-        checkedOffers: offers[point.type].filter((offer) => point.offers.includes(offer.id)),
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      });
-    } else if (Object.keys(offers).length === 0) {
-      return ({
-        ...point,
-        offersByType: [],
-        checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
-        checkedOffers: [],
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      });
-    } else {
-      return ({
-        ...point,
-        offersByType: offers[point.type],
-        checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
-        checkedOffers: offers[point.type].filter((offer) => point.offers.includes(offer.id)),
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      });
-    }
-  };
+  static parsePointToState = (point, offers, destinations) => ({
+    ...point,
+    offersByType: offers[point.type],
+    checkedDestination: destinations.find((elem) => (elem.id === point.destination)),
+    checkedOffers: offers[point.type].filter((offer) => point.offers.includes(offer.id)),
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
+  });
+
 
   static parseStateToPoint = (state) => {
     const point = { ...state };
