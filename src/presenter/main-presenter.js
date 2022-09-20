@@ -9,8 +9,9 @@ import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import PointPresenter from './point-presenter.js';
 import PointNewPresenter from './point-new-presenter.js';
 import { sortByDefault, sortByPrice, sortByTime } from '../utils/point.js';
-import { SortType, UpdateType, UserAction, FilterType, TimeLimit } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType, TimeLimit, tripMainElement } from '../const.js';
 import { filter } from '../utils/filter.js';
+import InfoPresenter from './info-presenter.js';
 
 export default class MainPresenter {
   #mainContainer = null;
@@ -28,6 +29,7 @@ export default class MainPresenter {
 
   #pointPresenter = new Map();
   #pointNewPresenter = null;
+  #infoPresenter = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
   #isLoadingPoints = true;
@@ -43,6 +45,7 @@ export default class MainPresenter {
     this.#filterModel = filterModel;
 
     this.#pointNewPresenter = new PointNewPresenter(this.#tripListComponent, this.#handleViewAction, this.#offersModel, this.#destinationsModel);
+    this.#infoPresenter = new InfoPresenter(tripMainElement, this.#pointsModel, this.#destinationsModel, this.#offersModel);
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);

@@ -9,11 +9,7 @@ import { render } from './framework/render.js';
 import PointsApiService from './api/points-api-service.js';
 import DestinationsApiService from './api/destinations-api-service.js';
 import OffersApiService from './api/offers-api-service.js';
-import { AUTHORIZATION, END_POINT } from './const.js';
-
-const tripControlElement = document.querySelector('.trip-main__trip-controls');
-const tripEventsElement = document.querySelector('.trip-events');
-const tripMainElement = document.querySelector('.trip-main');
+import { AUTHORIZATION, END_POINT, tripControlElement, tripEventsElement, tripMainElement } from './const.js';
 
 const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATION));
 const destinationsModel = new DestinationsModel(new DestinationsApiService(END_POINT, AUTHORIZATION));
@@ -42,5 +38,3 @@ pointsModel.init()
 
 filterPresenter.init();
 mainPresenter.init();
-
-

@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizePointEditDate, isSubmitDisabledDate, isPriceValid } from '../utils/point.js';
-import { OFFERS_OPTIONS, BLANC_POINT } from '../const.js';
+import { BLANC_POINT } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -24,7 +24,7 @@ const createPointEditTemplate = (point, destinations, offers) => {
 
   const getOfferOption = (offer) => {
     const offerTitle = offer.title;
-    return offerTitle in OFFERS_OPTIONS ? OFFERS_OPTIONS[offerTitle] : 'default';
+    return offerTitle !== '' ? offerTitle : 'default';
   };
 
   const getCheckedOffersID = () => checkedOffers.map((offer) => offer.id);
