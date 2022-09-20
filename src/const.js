@@ -1,12 +1,3 @@
-const OFFERS_OPTIONS = {
-  'Upgrade to a business class': 'comfort',
-  'Add luggage': 'luggage',
-  'Switch to comfort class': 'comfort',
-  'Add meal': 'meal',
-  'Choose seats': 'seats',
-  'Travel by train': 'train',
-};
-
 const MINUTES_IN_HOUR = 60;
 
 const MINUTES_IN_DAY = 1440;
@@ -79,4 +70,4 @@ const tripControlElement = document.querySelector('.trip-main__trip-controls');
 const tripEventsElement = document.querySelector('.trip-events');
 const tripMainElement = document.querySelector('.trip-main');
 
-export { MINUTES_IN_DAY, MINUTES_IN_HOUR, OFFERS_OPTIONS, FilterType, Mode, SortType, BLANC_POINT, UserAction, UpdateType, NoPointsTextType, Method, AUTHORIZATION, END_POINT, TimeLimit, tripControlElement, tripEventsElement, tripMainElement };
+export { MINUTES_IN_DAY, MINUTES_IN_HOUR, FilterType, Mode, SortType, BLANC_POINT, UserAction, UpdateType, NoPointsTextType, Method, AUTHORIZATION, END_POINT, TimeLimit, tripControlElement, tripEventsElement, tripMainElement };

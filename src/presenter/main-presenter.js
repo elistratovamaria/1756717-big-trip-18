@@ -35,6 +35,9 @@ export default class MainPresenter {
   #isLoadingPoints = true;
   #isLoadingOffers = true;
   #isLoadingDestinations = true;
+  #isReadyPoints = false;
+  #isReadyOffers = false;
+  #isReadyDestinations = false;
   #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor(mainContainer, pointsModel, destinationsModel, offersModel, filterModel) {
@@ -147,6 +150,10 @@ export default class MainPresenter {
       return;
     }
 
+    while (!this.#isReadyDestinations || !this.#isReadyOffers || !this.#isReadyPoints) {
+      this.#infoPresenter.init();
+    }
+
     const points = this.points;
     const pointCount = points.length;
     const destinationsCount = this.destinations.length;
@@ -219,16 +226,19 @@ export default class MainPresenter {
         break;
       case UpdateType.INIT_POINTS:
         this.#isLoadingPoints = false;
+        this.#isReadyPoints = true;
         remove(this.#loadingComponent);
         this.#renderMain();
         break;
       case UpdateType.INIT_OFFERS:
         this.#isLoadingOffers = false;
+        this.#isReadyOffers = true;
         remove(this.#loadingComponent);
         this.#renderMain();
         break;
       case UpdateType.INIT_DESTINATIONS:
         this.#isLoadingDestinations = false;
+        this.#isReadyDestinations = true;
         remove(this.#loadingComponent);
         this.#renderMain();
         break;

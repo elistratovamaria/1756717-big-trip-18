@@ -31,8 +31,10 @@ const getPrice = (points, offers) => {
   return baseTotalPrice + checkedOffersPrice;
 };
 
-const createInfoTemplate = (points, destinations, offers) => (
-  `<section class="trip-main__trip-info  trip-info">
+const createInfoTemplate = (points, destinations, offers) => {
+  if (points.length !== 0 && destinations.length !== 0 && Object.keys(offers).length !== 0) {
+    return (
+      `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
       <h1 class="trip-info__title">${getRouteNames(points, destinations)}</h1>
 
@@ -43,7 +45,23 @@ const createInfoTemplate = (points, destinations, offers) => (
       Total: &euro;&nbsp;<span class="trip-info__cost-value">${getPrice(points, offers)}</span>
     </p>
   </section>`
-);
+    );
+  } else {
+    return (
+      `<section class="trip-main__trip-info  trip-info">
+      <div class="trip-info__main">
+        <h1 class="trip-info__title">My route</h1>
+
+        <p class="trip-info__dates">Sometimes</p>
+      </div>
+
+      <p class="trip-info__cost">
+        Total: &euro;&nbsp;<span class="trip-info__cost-value">Much</span>
+      </p>
+    </section>`
+    );
+  }
+};
 
 export default class InfoView extends AbstractView {
   #points = null;

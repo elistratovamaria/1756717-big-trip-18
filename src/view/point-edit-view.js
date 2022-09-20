@@ -24,7 +24,8 @@ const createPointEditTemplate = (point, destinations, offers) => {
 
   const getOfferOption = (offer) => {
     const offerTitle = offer.title;
-    return offerTitle !== '' ? offerTitle : 'default';
+    const re = / /g;
+    return offerTitle.replace(re, '-');
   };
 
   const getCheckedOffersID = () => checkedOffers.map((offer) => offer.id);
@@ -156,7 +157,7 @@ const createPointEditTemplate = (point, destinations, offers) => {
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabledDate(dateTo, dateFrom) || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${checkedDestination.name === '' ? 'disabled' : ''} ${isSubmitDisabledDate(dateTo, dateFrom) || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
         <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${getButtonResetText()}</button>
         <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
           <span class="visually-hidden">Open event</span>
@@ -342,15 +343,16 @@ export default class PointEditView extends AbstractStatefulView {
     const destinationNames = this.#destinations.map((elem) => elem.name);
     const isDestinationExist = destinationNames.includes(evt.target.value);
     if (!isDestinationExist) {
-      this.element.querySelector('.event__input--destination').setCustomValidity('Destination should be choose from the current list');
+      this.updateElement({
+        checkedDestination: {name: '', description: '', pictures: [],},
+        destination: 1,
+      });
     } else {
-      this.element.querySelector('.event__input--destination').setCustomValidity('');
+      this.updateElement({
+        checkedDestination: this.#destinations.find((elem) => elem.name === evt.target.value),
+        destination: this.#destinations.find((elem) => elem.name === evt.target.value).id,
+      });
     }
-    this.element.querySelector('.event__input--destination').reportValidity();
-    this.updateElement({
-      checkedDestination: this.#destinations.find((elem) => elem.name === evt.target.value),
-      destination: this.#destinations.find((elem) => elem.name === evt.target.value).id,
-    });
   };
 
   #formSubmitHandler = (evt) => {
