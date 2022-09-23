@@ -49,7 +49,10 @@ export default class SortView extends AbstractView {
 
   #sortTypeChangeHandler = (evt) => {
     evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
+    const sortValues = Object.values(SortType);
+    if (sortValues.includes(evt.target.dataset.sortType)) {
+      this._callback.sortTypeChange(evt.target.dataset.sortType);
+    }
   };
 }
 
