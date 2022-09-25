@@ -51,17 +51,15 @@ const createPointEditTemplate = (point, destinations, offers) => {
                     ${createEditOffersTemplate()}
                   </div>
                 </section>`);
-    } else {
-      return ('');
     }
+    return ('');
   };
 
   const createDestinationDescriptionTemplate = () => {
     if (checkedDestination.description !== '') {
       return (`<p class="event__destination-description">${checkedDestination.description}</p>`);
-    } else {
-      return '';
     }
+    return '';
   };
 
   const createPicturesTemplate = (pictures) => pictures
@@ -77,9 +75,8 @@ const createPointEditTemplate = (point, destinations, offers) => {
             </div>
           </div>`
       );
-    } else {
-      return '';
     }
+    return '';
   };
 
   const createEditDestinationTemplate = () => {
@@ -89,9 +86,8 @@ const createPointEditTemplate = (point, destinations, offers) => {
                 ${createDestinationDescriptionTemplate()}
                 ${createDestinationPicturesTemplate()}
               </section>`);
-    } else {
-      return '';
     }
+    return '';
   };
 
   const isSelectedDestinationName = (name) => checkedDestination.name === name ? 'selected' : '';

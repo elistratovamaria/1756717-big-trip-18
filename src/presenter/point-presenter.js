@@ -11,9 +11,6 @@ export default class PointPresenter {
   #changeData = null;
   #changeMode = null;
 
-  #destinationsModel = null;
-  #offersModel = null;
-
   #pointComponent = null;
   #pointEditComponent = null;
 

@@ -20,8 +20,7 @@ const getPrice = (points, offers) => {
   const baseTotalPrice = points.reduce((priceA, priceB) => priceA + priceB.basePrice, 0);
   const getCheckedOffers = () => {
     const checkedOffers = [];
-    for (let i = 0; i < points.length; i++) {
-      const point = points[i];
+    for (const point of points) {
       checkedOffers.push(offers[point.type].filter((offer) => point.offers.includes(offer.id)));
     }
     return checkedOffers;
